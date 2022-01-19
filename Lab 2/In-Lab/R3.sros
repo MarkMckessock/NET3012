@@ -28,3 +28,12 @@ configure router interface toR2 port 1/1/4
 configure router interface toR4 ipv4 primary address 10.3.4.3 prefix-length 27
 configure router interface toR4 port 1/1/2
 commit
+
+# OSPF
+router ospf area 0.0.0.0 interface toR7 interface-type point-to-point
+router ospf area 0.0.0.0 interface toR1 interface-type point-to-point
+router ospf area 0.0.0.0 interface toR2 interface-type point-to-point
+router ospf area 0.0.0.0 interface toR4 interface-type point-to-point
+router ospf area 0.0.0.0 interface system interface-type point-to-point
+router ospf admin-state enable
+commit
