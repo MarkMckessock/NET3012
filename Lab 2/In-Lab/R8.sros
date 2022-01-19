@@ -25,13 +25,11 @@ commit
 
 # OSPF
 configure router ospf area 0.0.0.0 interface toR4 interface-type point-to-point
-configure router ospf area 0.0.0.0 interface toR12 interface-type point-to-point
 configure router ospf area 0.0.0.0 interface system interface-type point-to-point
 configure router ospf admin-state enable
 commit
 
 # LDP
-configure router ldp
-configure router ldp interface-parameters interface toR4
+configure router ldp interface-parameters interface toR4 ipv4 admin-state enable
 configure router ldp admin-state enable
 commit

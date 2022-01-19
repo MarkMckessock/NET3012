@@ -39,10 +39,9 @@ configure router ospf admin-state enable
 commit
 
 # LDP
-configure router ldp
-configure router ldp interface-parameters interface toR1
-configure router ldp interface-parameters interface toR2
-configure router ldp interface-parameters interface toR4
-configure router ldp interface-parameters interface toR7
+configure router ldp interface-parameters interface toR1 ipv4 admin-state enable
+configure router ldp interface-parameters interface toR2 ipv4 admin-state enable
+configure router ldp interface-parameters interface toR4 ipv4 admin-state enable
+configure router ldp interface-parameters interface toR7 ipv4 admin-state enable
 configure router ldp admin-state enable
 commit
