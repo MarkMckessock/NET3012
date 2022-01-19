@@ -1,0 +1,35 @@
+edit-config global
+configure system name lab02_mcke0424_R4
+
+# Card bring-up
+card 1 card-type iom4-e
+commit
+
+configure sfm 1 sfm-type m-sfm5-12
+commit
+
+card 1 mda 1 mda-type me10-10gb-sfp+
+commit
+
+# Port bring-up
+configure port 1/1/1 admin-state enable
+configure port 1/1/2 admin-state enable
+configure port 1/1/3 admin-state enable
+configure port 1/1/4 admin-state enable
+commit
+
+# Interface Configuration
+configure router interface "system" ipv4 primary address 10.10.10.4 prefix-length 32
+
+configure router interface toR8 ipv4 primary address 10.4.8.4 prefix-length 27
+configure router interface toR8 port 1/1/1
+
+configure router interface toR1 ipv4 primary address 10.1.4.4 prefix-length 27
+configure router interface toR1 port 1/1/4
+
+configure router interface toR2 ipv4 primary address 10.2.4.4 prefix-length 27
+configure router interface toR2 port 1/1/3
+
+configure router interface toR3 ipv4 primary address 10.3.4.4 prefix-length 27
+configure router interface toR3 port 1/1/2
+commit

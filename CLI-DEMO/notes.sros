@@ -1,0 +1,11 @@
+configure global # implicit configuration mode
+edit-config global #explicit configuration mode
+
+
+compare # compare running vs candidate
+validate # validate the current candidate config
+
+discard # discard any pending changes
+
+admin show configuration # show saved configuration
+# admin show configuration 
