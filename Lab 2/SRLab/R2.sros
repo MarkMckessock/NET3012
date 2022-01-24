@@ -46,3 +46,7 @@ configure router ldp interface-parameters interface toR4 ipv4 admin-state enable
 configure router ldp interface-parameters interface toR6 ipv4 admin-state enable
 configure router ldp admin-state enable
 commit
+
+# Bonus - ECMP
+configure router ecmp 4
+commit
