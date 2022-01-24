@@ -2,13 +2,9 @@ edit-config global
 configure system name lab02_mcke0424_R12
 
 # Card bring-up
-card 1 card-type iom4-e
-commit
-
+configure card 1 card-type iom4-e
 configure sfm 1 sfm-type m-sfm5-12
-commit
-
-card 1 mda 1 mda-type me10-10gb-sfp+
+configure card 1 mda 1 mda-type me10-10gb-sfp+
 commit
 
 # Port bring-up
