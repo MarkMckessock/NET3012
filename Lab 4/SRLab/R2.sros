@@ -1,0 +1,152 @@
+edit-config global
+configure system name lab04_mcke0424_R2
+
+# Card bring-up
+configure card 1 card-type iom4-e
+configure sfm 1 sfm-type m-sfm5-12
+configure card 1 mda 1 mda-type me10-10gb-sfp+
+commit
+
+# Port bring-up
+configure port 1/1/1 admin-state enable
+configure port 1/1/2 admin-state enable
+configure port 1/1/3 admin-state enable
+configure port 1/1/4 admin-state enable
+commit
+
+# Interface Configuration
+configure router interface "system" ipv4 primary address 10.10.10.2 prefix-length 32
+
+configure router interface toR6 ipv4 primary address 10.2.6.2 prefix-length 27
+configure router interface toR6 port 1/1/1
+
+configure router interface toR1 ipv4 primary address 10.1.2.2 prefix-length 27
+configure router interface toR1 port 1/1/2
+
+configure router interface toR3 ipv4 primary address 10.2.3.2 prefix-length 27
+configure router interface toR3 port 1/1/4
+
+configure router interface toR4 ipv4 primary address 10.2.4.2 prefix-length 27
+configure router interface toR4 port 1/1/3
+commit
+
+# OSPF
+configure router ospf area 0.0.0.0 interface toR6 interface-type point-to-point
+configure router ospf area 0.0.0.0 interface toR1 interface-type point-to-point
+configure router ospf area 0.0.0.0 interface toR3 interface-type point-to-point
+configure router ospf area 0.0.0.0 interface toR4 interface-type point-to-point
+configure router ospf area 0.0.0.0 interface system interface-type point-to-point
+configure router ospf admin-state enable
+commit
+
+# LDP
+configure router ldp interface-parameters interface toR1 ipv4 admin-state enable
+configure router ldp interface-parameters interface toR3 ipv4 admin-state enable
+configure router ldp interface-parameters interface toR4 ipv4 admin-state enable
+configure router ldp interface-parameters interface toR6 ipv4 admin-state enable
+configure router ldp admin-state enable
+commit
+
+##################### START OF 3.1 ############################
+
+# RVSP
+configure router rsvp admin-state enable
+configure router rsvp interface "toR6" admin-state enable
+configure router rsvp interface "toR1" admin-state enable
+configure router rsvp interface "toR3" admin-state enable
+configure router rsvp interface "toR4" admin-state enable
+
+# MPLS
+configure router mpls admin-state enable
+configure router mpls interface "toR6" admin-state enable
+configure router mpls interface "toR1" admin-state enable
+configure router mpls interface "toR3" admin-state enable
+configure router mpls interface "toR4" admin-state enable
+commit
+
+configure router mpls path "loose" admin-state enable
+configure router mpls lsp "toR6-1" to 10.10.10.6 type p2p-rsvp primary "loose" admin-state enable
+configure router mpls lsp "toR6-1" admin-state enable
+commit
+
+##################### START OF 4.1 ############################
+
+# CSPF
+configure router ospf traffic-engineering
+
+##################### START OF 4.2 ############################
+
+configure routing-options if-attribute admin-group "green" value 1
+configure routing-options if-attribute admin-group "red" value 2
+
+configure router mpls interface "toR1" admin-group "green"
+configure router mpls interface "toR3" admin-group "green"
+configure router mpls interface "toR4" admin-group "green"
+
+configure router mpls interface "toR3" admin-group "red"
+commit
+
+configure router mpls lsp "toR4-1" to 10.10.10.4 type p2p-rsvp primary "loose" admin-state enable
+configure router mpls lsp "toR4-1" admin-state enable
+configure router mpls lsp "toR4-1" include-admin-group "green"
+configure router mpls lsp "toR4-1" exclude-admin-group "red"
+configure router mpls lsp "toR4-1" path-computation-method local-cspf
+commit
+
+# configure router interface "toR4" admin-state disable # 4.2.6
+# configure router interface "toR1" admin-state disable # 4.2.7
+
+##################### START OF 5.1 ############################
+
+##################### START OF 5.2 ############################
+
+##################### START OF 5.3 ############################
+
+# configure router interface "toR4" admin-state disable # 5.3.1
+
+##################### START OF 6.1 ############################
+
+configure routing-options if-attribute srlg-group orange value 1
+configure router mpls interface "toR1" srlg-group "orange"
+configure router mpls interface "toR4" srlg-group "orange"
+
+configure routing-options if-attribute srlg-group blue value 2
+configure router mpls interface "toR3" srlg-group "blue"
+commit
+
+##################### START OF 7.1 ############################
+
+configure router mpls path "toR3-strict" admin-state enable
+configure router mpls path "toR3-strict" hop 10 ip-address 10.10.10.4 type strict
+configure router mpls path "toR3-strict" hop 20 ip-address 10.10.10.3 type strict
+
+configure router mpls lsp "toR3-6" to 10.10.10.3 type p2p-rsvp primary "toR3-strict" admin-state enable
+configure router mpls lsp "toR3-6" path-computation-method local-cspf
+configure router mpls lsp "toR3-6" fast-reroute frr-method facility
+commit
+
+# show router mpls bypass-tunnel protected-lsp # SHOW COMMAND (7.1.4)
+# show router rsvp session bypass-tunnel # SHOW COMMAND (7.1.5)
+# show router rsvp session bypass-tunnel detail # SHOW COMMAND (7.1.6)
+
+# See POD 4 for 7.1.7 and 7.1.9
+# configure router interface "toR4" admin-state disable # (7.1.7) FOR POD 1
+
+############################## AFTER 7.1.8 ######################################
+
+# configure router interface "toR4" admin-state enable # (7.1.9) FOR POD 1
+
+##################### START OF 7.2 ############################
+
+configure router mpls lsp "toR3-6" fast-reroute frr-method one-to-one
+
+# show router mpls lsp transit # (7.2.3)
+# show router mpls lsp transit lsp-name "toR7-6::toR7-strict" detail # (7.2.4)
+# show router rsvp session detail # (7.2.5)
+
+# See POD 4 for 7.2.6 and 7.2.8
+# configure router interface "toR4" admin-state disable # (7.1.6) FOR POD 1
+
+############################## AFTER 7.2.7 ######################################
+
+# configure router interface "toR4" admin-state enable # (7.1.8) FOR POD 1
