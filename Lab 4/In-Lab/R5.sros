@@ -78,7 +78,7 @@ commit
 
 ##################### START OF 5.2 ############################
 
-configure router mpls lsp "to4-4" secondary "loose" standby
+configure router mpls lsp "toR4-4" secondary "loose" standby
 commit
 
 ##################### START OF 5.3 ############################
