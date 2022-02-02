@@ -1,5 +1,5 @@
 edit-config global
-environment prompt timestamps
+environment prompt timestamp
 configure system name lab04_mcke0424_R6
 
 # Card bring-up
@@ -48,10 +48,10 @@ commit
 
 # Loose Path
 configure router mpls path "loose" admin-state enable
-configure router mpls lsp "toR2-1" to 10.10.10.2 primary "loose" type p2p-rsvp
+configure router mpls lsp "toR2-1" to 10.10.10.2 type p2p-rsvp primary "loose" admin-state enable
 configure router mpls lsp "toR2-1" admin-state enable
 
-configure router mpls lsp "toR8-1" to 10.10.10.8 primary "loose" type p2p-rsvp
+configure router mpls lsp "toR8-1" to 10.10.10.8 type p2p-rsvp primary "loose" admin-state enable
 configure router mpls lsp "toR8-1" admin-state enable
 commit
 

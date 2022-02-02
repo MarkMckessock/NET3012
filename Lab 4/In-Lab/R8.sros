@@ -48,10 +48,10 @@ commit
 
 # Loose Path
 configure router mpls path "loose" admin-state enable
-configure router mpls lsp "toR4-1" to 10.10.10.4 primary "loose" type p2p-rsvp
+configure router mpls lsp "toR4-1" to 10.10.10.4 type p2p-rsvp primary "loose" 
 configure router mpls lsp "toR4-1" admin-state enable
 
-configure router mpls lsp "toR7-1" to 10.10.10.7 primary "loose" type p2p-rsvp
+configure router mpls lsp "toR7-1" to 10.10.10.7 type p2p-rsvp primary "loose" 
 configure router mpls lsp "toR7-1" admin-state enable
 commit
 ##################### START OF 4.1 ############################

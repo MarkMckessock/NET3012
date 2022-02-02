@@ -48,10 +48,10 @@ commit
 
 # Loose Path
 configure router mpls path "loose" admin-state enable
-configure router mpls lsp "toR1-1" to 10.10.10.1 primary "loose" type p2p-rsvp
+configure router mpls lsp "toR1-1" to 10.10.10.1 type p2p-rsvp primary "loose" admin-state enable
 configure router mpls lsp "toR1-1" admin-state enable
 
-configure router mpls lsp "toR6-1" to 10.10.10.6 primary "loose" type p2p-rsvp
+configure router mpls lsp "toR6-1" to 10.10.10.6 type p2p-rsvp primary "loose" admin-state enable
 configure router mpls lsp "toR6-1" admin-state enable
 commit
 
