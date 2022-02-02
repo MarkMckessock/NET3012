@@ -1,5 +1,5 @@
 edit-config global
-environment prompt timestamps
+environment prompt timestamp
 configure system name lab04_mcke0424_R9
 
 # Card bring-up
