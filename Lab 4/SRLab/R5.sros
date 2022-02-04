@@ -1,4 +1,6 @@
 edit-config global
+environment more false
+environment prompt timestamp
 configure system name lab04_mcke0424_R5
 
 # Card bring-up
@@ -48,11 +50,14 @@ commit
 
 # Loose Path
 configure router mpls path "loose" admin-state enable
-configure router mpls lsp "toR1-1" to 10.10.10.1 primary "loose" type p2p-rsvp
-configure router mpls lsp "toR1-1" admin-state enable
+configure router mpls lsp "toR1-1" type p2p-rsvp to 10.10.10.1 primary "loose"
+admin-state enable
+exit
+commit
 
-configure router mpls lsp "toR6-1" to 10.10.10.6 primary "loose" type p2p-rsvp
-configure router mpls lsp "toR6-1" admin-state enable
+configure router mpls lsp "toR6-1" type p2p-rsvp to 10.10.10.6 primary "loose"
+admin-state enable
+exit
 commit
 
 ##################### START OF 4.1 ############################
@@ -76,7 +81,7 @@ commit
 
 ##################### START OF 5.2 ############################
 
-configure router mpls lsp "to4-4" secondary "loose" standby
+configure router mpls lsp "toR4-4" type p2p-rsvp secondary "loose" standby
 commit
 
 ##################### START OF 5.3 ############################
@@ -88,9 +93,11 @@ configure routing-options if-attribute srlg-group orange value 1
 configure router mpls path "primary-toR8" admin-state enable
 configure router mpls path "secondary-toR8" admin-state enable
 
-configure router mpls lsp "toR8-5" to 10.10.10.8 type p2p-rsvp primary "primary-toR8" admin-state enable
+configure router mpls lsp "toR8-5" to 10.10.10.8 type p2p-rsvp primary "primary-toR8"
+admin-state enable
+exit
 configure router mpls lsp "toR8-5" secondary "secondary-toR8" srlg true standby true admin-state enable
-configure router mpls lsp "toR8-5" path-computation-method local-cspf
+configure router mpls lsp "toR8-5" type p2p-rsvp path-computation-method local-cspf
 commit
 
 ##################### START OF 7.1 ############################
@@ -101,7 +108,9 @@ configure router mpls path "toR8-strict" hop 20 ip-address 10.10.10.2 type stric
 configure router mpls path "toR8-strict" hop 30 ip-address 10.10.10.4 type strict
 configure router mpls path "toR8-strict" hop 40 ip-address 10.10.10.8 type strict
 
-configure router mpls lsp "toR8-6" to 10.10.10.8 type p2p-rsvp primary "toR8-strict" admin-state enable
+configure router mpls lsp "toR8-6" to 10.10.10.8 type p2p-rsvp primary "toR8-strict"
+exit
+configure router mpls lsp "toR8-6" admin-state enable
 configure router mpls lsp "toR8-6" path-computation-method local-cspf
 configure router mpls lsp "toR8-6" fast-reroute frr-method facility
 commit

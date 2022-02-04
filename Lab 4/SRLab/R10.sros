@@ -1,4 +1,6 @@
 edit-config global
+environment more false
+environment prompt timestamp
 configure system name lab04_mcke0424_R10
 
 # Card bring-up

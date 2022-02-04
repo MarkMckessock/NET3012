@@ -1,4 +1,6 @@
 edit-config global
+environment more false
+environment prompt timestamp
 configure system name lab04_mcke0424_R2
 
 # Card bring-up
@@ -120,12 +122,14 @@ configure router mpls path "toR3-strict" admin-state enable
 configure router mpls path "toR3-strict" hop 10 ip-address 10.10.10.4 type strict
 configure router mpls path "toR3-strict" hop 20 ip-address 10.10.10.3 type strict
 
-configure router mpls lsp "toR3-6" to 10.10.10.3 type p2p-rsvp primary "toR3-strict" admin-state enable
+configure router mpls lsp "toR3-6" to 10.10.10.3 type p2p-rsvp primary "toR3-strict"
+exit
+configure router mpls lsp "toR3-6" admin-state enable
 configure router mpls lsp "toR3-6" path-computation-method local-cspf
 configure router mpls lsp "toR3-6" fast-reroute frr-method facility
 commit
 
-# show router mpls bypass-tunnel protected-lsp # SHOW COMMAND (7.1.4)
+# show router mpls bypass-tunnel protected-lsp detail # SHOW COMMAND (7.1.4)
 # show router rsvp session bypass-tunnel # SHOW COMMAND (7.1.5)
 # show router rsvp session bypass-tunnel detail # SHOW COMMAND (7.1.6)
 
