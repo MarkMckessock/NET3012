@@ -131,7 +131,7 @@ configure router mpls lsp "toR2-6" path-computation-method local-cspf
 configure router mpls lsp "toR2-6" fast-reroute frr-method facility
 commit
 
-# show router mpls bypass-tunnel protected-lsp # SHOW COMMAND (7.1.4)
+# show router mpls bypass-tunnel protected-lsp detail # SHOW COMMAND (7.1.4)
 # show router rsvp session bypass-tunnel # SHOW COMMAND (7.1.5)
 # show router rsvp session bypass-tunnel detail # SHOW COMMAND (7.1.6)
 
