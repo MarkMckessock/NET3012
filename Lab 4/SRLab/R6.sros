@@ -80,7 +80,7 @@ commit
 
 ##################### START OF 5.2 ############################
 
-configure router mpls lsp "toR3-4" secondary "loose" standby
+configure router mpls lsp "toR3-4" type p2p-rsvp secondary "loose" standby
 commit
 
 ##################### START OF 5.3 ############################
@@ -92,6 +92,7 @@ configure routing-options if-attribute srlg-group orange value 1
 configure router mpls path "primary-toR7" admin-state enable
 configure router mpls path "secondary-toR7" admin-state enable
 
+configure router mpls lsp "toR7-5" admin-state enable
 configure router mpls lsp "toR7-5" to 10.10.10.7 type p2p-rsvp primary "primary-toR7"
 admin-state enable
 exit

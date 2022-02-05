@@ -53,7 +53,6 @@ configure router mpls path "loose" admin-state enable
 configure router mpls lsp "toR1-1" type p2p-rsvp to 10.10.10.1 primary "loose"
 admin-state enable
 exit
-commit
 
 configure router mpls lsp "toR6-1" type p2p-rsvp to 10.10.10.6 primary "loose"
 admin-state enable
@@ -93,6 +92,7 @@ configure routing-options if-attribute srlg-group orange value 1
 configure router mpls path "primary-toR8" admin-state enable
 configure router mpls path "secondary-toR8" admin-state enable
 
+configure router mpls lsp "toR8-5" admin-state enable
 configure router mpls lsp "toR8-5" to 10.10.10.8 type p2p-rsvp primary "primary-toR8"
 admin-state enable
 exit
