@@ -36,8 +36,8 @@ commit
 configure router bgp group "iBGP" peer-as 65001 family ipv4 true 
 configure router bgp group "iBGP" next-hop-self true
 configure router bgp neighbor 1.1.1.1 group "iBGP"
-configure rotuer bgp neighbor 2.2.2.2 group "iBGP"
-configure rotuer bgp neighbor 5.5.5.5 group "iBGP"
+configure router bgp neighbor 2.2.2.2 group "iBGP"
+configure router bgp neighbor 5.5.5.5 group "iBGP"
 commit
 
 ######################## CAPTURES #########################
