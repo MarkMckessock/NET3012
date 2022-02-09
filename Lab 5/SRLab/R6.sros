@@ -33,8 +33,7 @@ configure router ospf3 0 area 0.0.0.0 interface "toR2" interface-type point-to-p
 commit
 
 # iBGP
-configure router bgp group "iBGP" peer-as 65001 family ipv4 true 
-configure router bgp group "iBGP" next-hop-self true
+configure router bgp group "iBGP" peer-as 65001 next-hop-self true family ipv4 true
 configure router bgp neighbor 1.1.1.1 group "iBGP"
 configure router bgp neighbor 2.2.2.2 group "iBGP"
 configure router bgp neighbor 5.5.5.5 group "iBGP"
