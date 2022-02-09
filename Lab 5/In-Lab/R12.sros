@@ -1,0 +1,16 @@
+edit-config global
+environment prompt timestamp
+configure system name lab05_mcke0424_R12
+
+# Card bring-up
+configure card 1 card-type iom-v
+configure card 1 mda 1 mda-type m20-v
+commit
+
+# Port bring-up
+configure port 1/1/2 admin-state enable
+commit
+
+# Interface Configuration
+configure router interface "system" ipv4 primary address 12.12.12.12 prefix-length 32
+commit

@@ -1,0 +1,54 @@
+edit-config global
+environment prompt timestamp
+configure system name lab05_mcke0424_R6
+
+# Card bring-up
+configure card 1 card-type iom-v
+configure card 1 mda 1 mda-type m20-v
+commit
+
+# Port bring-up
+configure port 1/1/1 admin-state enable
+configure port 1/1/2 admin-state enable
+commit
+
+# Interface Configuration
+configure router interface "system" ipv4 primary address 6.6.6.6 prefix-length 32
+configure router interface "system" ipv6 address 2001:db8:a:100::6 prefix-length 128
+
+configure router interface "toR2" ipv4 primary address 140.2.6.2 prefix-length 30
+configure router interface "toR2" port 1/1/1
+
+commit
+
+# OSPF
+configure router ospf 0 admin-state enable
+configure router ospf 0 area 0.0.0.0 interface "system" interface-type point-to-point
+configure router ospf 0 area 0.0.0.0 interface "toR2" interface-type point-to-point
+
+configure router ospf3 admin-state enable
+configure router ospf3 0 area 0.0.0.0 interface "system" interface-type point-to-point
+configure router ospf3 0 area 0.0.0.0 interface "toR2" interface-type point-to-point
+commit
+
+# iBGP
+configure router bgp group "iBGP" peer-as 65001 family ipv4 true 
+configure router bgp group "iBGP" next-hop-self true
+configure router bgp neighbor 1.1.1.1 group "iBGP"
+configure rotuer bgp neighbor 2.2.2.2 group "iBGP"
+configure rotuer bgp neighbor 5.5.5.5 group "iBGP"
+commit
+
+######################## CAPTURES #########################
+
+show system info
+show router interface
+show router route-table
+show router bgp summary all
+show router bgp routes hunt
+show router bgp neighbor 1.1.1.1 advertised-routes
+show router bgp neighbor 1.1.1.1 received-routes
+show router bgp neighbor 2.2.2.2 advertised-routes
+show router bgp neighbor 2.2.2.2 received-routes
+show router bgp neighbor 5.5.5.5 advertised-routes
+show router bgp neighbor 5.5.5.5 received-routes

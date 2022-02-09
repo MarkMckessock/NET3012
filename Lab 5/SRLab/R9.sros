@@ -1,0 +1,17 @@
+edit-config global
+environment prompt timestamp
+configure system name lab05_mcke0424_R9
+
+# Card bring-up
+configure card 1 card-type iom4-e
+configure sfm 1 sfm-type m-sfm5-12
+configure card 1 mda 1 mda-type me10-10gb-sfp+
+commit
+
+# Port bring-up
+configure port 1/1/2 admin-state enable
+commit
+
+# Interface Configuration
+configure router interface "system" ipv4 primary address 9.9.9.9 prefix-length 32
+commit

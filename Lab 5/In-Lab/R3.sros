@@ -1,0 +1,83 @@
+edit-config global
+environment prompt timestamp
+configure system name lab05_mcke0424_R3
+
+# Card bring-up
+configure card 1 card-type iom-v
+configure card 1 mda 1 mda-type m20-v
+commit
+
+# Port bring-up
+configure port 1/1/1 admin-state enable
+configure port 1/1/2 admin-state enable
+configure port 1/1/3 admin-state enable
+commit
+
+# Interface Configuration
+configure router interface "system" ipv4 primary address 3.3.3.3 prefix-length 32
+configure router interface "system" ipv6 address 2001:db8:a:100::3 prefix-length 128
+
+configure router interface "toR7" ipv4 primary address 150.3.7.1 prefix-length 30
+configure router interface "toR7" port 1/1/1
+
+configure router interface "toR4" ipv4 primary address 150.3.4.1 prefix-length 30
+configure router interface "toR4" port 1/1/2
+
+configure router interface "toR1" ipv4 primary address 145.1.3.2 prefix-length 30
+configure router interface "toR1" port 1/1/3
+commit
+
+# OSPF
+configure router ospf 0 admin-state enable
+configure router ospf 0 area 0.0.0.0 interface "system" interface-type point-to-point
+configure router ospf 0 area 0.0.0.0 interface "toR4" interface-type point-to-point
+configure router ospf 0 area 0.0.0.0 interface "toR7" interface-type point-to-point
+
+configure router ospf3 admin-state enable
+configure router ospf3 0 area 0.0.0.0 interface "system" interface-type point-to-point
+configure router ospf3 0 area 0.0.0.0 interface "toR4" interface-type point-to-point
+configure router ospf3 0 area 0.0.0.0 interface "toR7" interface-type point-to-point
+commit
+
+# eBGP
+configure router autonomous-system 65002
+configure router bgp group "eBGP" peer-as 65001 family ipv4 true
+configure router bgp neighbor 145.1.3.1 group "eBGP"
+commit
+
+# iBGP
+configure router bgp group "iBGP" peer-as 65002 family ipv4 true 
+configure router bgp group "iBGP" next-hop-self true
+configure router bgp neighbor 4.4.4.4 group "iBGP"
+configure rotuer bgp neighbor 7.7.7.7 group "iBGP"
+configure rotuer bgp neighbor 8.8.8.8 group "iBGP"
+commit
+
+################# LAB 2 ##########################
+
+# Route Policy
+configure policy-options
+  policy-statement "accept-all" default-action action-type accept
+  policy-statement "ospf-and-direct" entry 10 from protocol name direct to protocol name bgp action action-type accept
+  policy-statement "ospf-and-direct" entry 20 from protocol name ospf to protocol name bgp action action-type accept
+exit
+
+configure router bgp group "eBGP" import policy "accept-all"
+configure router bgp group "eBGP" export policy "ospf-and-direct"
+commit
+
+######################## CAPTURES #########################
+
+show system info
+show router interface
+show router route-table
+show router bgp summary all
+show router bgp routes hunt
+show router bgp neighbor 145.1.3.1 advertised-routes
+show router bgp neighbor 145.1.3.1 received-routes
+show router bgp neighbor 4.4.4.4 advertised-routes
+show router bgp neighbor 4.4.4.4 received-routes
+show router bgp neighbor 7.7.7.7 advertised-routes
+show router bgp neighbor 7.7.7.7 received-routes
+show router bgp neighbor 8.8.8.8 advertised-routes
+show router bgp neighbor 8.8.8.8 received-routes
