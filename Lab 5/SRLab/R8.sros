@@ -53,6 +53,7 @@ commit
 show system info
 show router interface
 show router route-table
+show router route-table ipv6
 show router bgp summary all
 show router bgp routes hunt
 show router bgp neighbor 3.3.3.3 advertised-routes
