@@ -108,11 +108,11 @@ show router bgp neighbor 7.7.7.7 advertised-routes
 show router bgp neighbor 7.7.7.7 received-routes
 show router bgp neighbor 8.8.8.8 advertised-routes
 show router bgp neighbor 8.8.8.8 received-routes
-show router bgp neighbor 2001:db8:a:100::4 advertised-routes
-show router bgp neighbor 2001:db8:a:100::4 received-routes
-show router bgp neighbor 2001:db8:a:100::7 advertised-routes
-show router bgp neighbor 2001:db8:a:100::7 received-routes
-show router bgp neighbor 2001:db8:a:100::8 advertised-routes
-show router bgp neighbor 2001:db8:a:100::8 received-routes
-show router bgp neighbor <R1 link-local> advertised-routes
-show router bgp neighbor <R1 link-local> received-routes
+show router bgp neighbor 2001:db8:a:100::4 advertised-routes ipv6
+show router bgp neighbor 2001:db8:a:100::4 received-routes ipv6
+show router bgp neighbor 2001:db8:a:100::7 advertised-routes ipv6
+show router bgp neighbor 2001:db8:a:100::7 received-routes ipv6
+show router bgp neighbor 2001:db8:a:100::8 advertised-routes ipv6
+show router bgp neighbor 2001:db8:a:100::8 received-routes ipv6
+show router bgp neighbor <R1 link-local> advertised-routes ipv6
+show router bgp neighbor <R1 link-local> received-routes ipv6

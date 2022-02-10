@@ -64,9 +64,9 @@ show router bgp neighbor 2.2.2.2 advertised-routes
 show router bgp neighbor 2.2.2.2 received-routes
 show router bgp neighbor 5.5.5.5 advertised-routes
 show router bgp neighbor 5.5.5.5 received-routes
-show router bgp neighbor 2001:db8:a:100::1 advertised-routes
-show router bgp neighbor 2001:db8:a:100::1 received-routes
-show router bgp neighbor 2001:db8:a:100::2 advertised-routes
-show router bgp neighbor 2001:db8:a:100::2 received-routes
-show router bgp neighbor 2001:db8:a:100::5 advertised-routes
-show router bgp neighbor 2001:db8:a:100::5 received-routes
+show router bgp neighbor 2001:db8:a:100::1 advertised-routes ipv6
+show router bgp neighbor 2001:db8:a:100::1 received-routes ipv6
+show router bgp neighbor 2001:db8:a:100::2 advertised-routes ipv6
+show router bgp neighbor 2001:db8:a:100::2 received-routes ipv6
+show router bgp neighbor 2001:db8:a:100::5 advertised-routes ipv6
+show router bgp neighbor 2001:db8:a:100::5 received-routes ipv6
