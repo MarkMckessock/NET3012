@@ -115,6 +115,6 @@ show router bgp neighbor 2001:db8:a:100::5 advertised-routes ipv6
 show router bgp neighbor 2001:db8:a:100::5 received-routes ipv6
 show router bgp neighbor 2001:db8:a:100::6 advertised-routes ipv6
 show router bgp neighbor 2001:db8:a:100::6 received-routes ipv6
-show router bgp neighbor <R3 link-local> advertised-routes ipv6 
-show router bgp neighbor <R3 link-local> received-routes ipv6
+show router bgp neighbor "<R3 link-local>-toR3" advertised-routes ipv6 
+show router bgp neighbor "<R3 link-local>-toR3" received-routes ipv6
 
