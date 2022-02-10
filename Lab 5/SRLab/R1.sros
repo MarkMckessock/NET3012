@@ -88,7 +88,9 @@ configure router bgp neighbor 2001:db8:a:100::2 group "iBGP" family ipv6 true
 configure router bgp neighbor 2001:db8:a:100::5 group "iBGP" family ipv6 true
 configure router bgp neighbor 2001:db8:a:100::6 group "iBGP" family ipv6 true
 
-# Rshowun 'show router neighbor' to get R3 link-local address
+# Run 'show router neighbor' to get R3 link-local address
+# If 'show router neighbor' does not list the address for R3, go on R3 and use 
+# 'show router interface ipv6' and get the link-local address for the 'toR1' interface
 configure router bgp neighbor "<R3 link-local>%toR3" group "eBGP" family ipv6 true
 configure router bgp neighbor "<R3 link-local>%toR3" export policy "ospf3-and-direct"
 commit
