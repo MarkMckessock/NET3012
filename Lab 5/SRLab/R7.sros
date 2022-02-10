@@ -20,6 +20,8 @@ configure router interface "system" ipv6 address 2001:db8:a:100::7 prefix-length
 
 configure router interface "toR3" ipv4 primary address 150.3.7.2 prefix-length 30
 configure router interface "toR3" port 1/1/1
+configure router interface "toR3" ipv6
+exit
 
 commit
 

@@ -20,6 +20,8 @@ configure router interface "system" ipv6 address 2001:db8:a:100::6 prefix-length
 
 configure router interface "toR2" ipv4 primary address 140.2.6.2 prefix-length 30
 configure router interface "toR2" port 1/1/1
+configure router interface "toR2" ipv6
+exit
 
 commit
 

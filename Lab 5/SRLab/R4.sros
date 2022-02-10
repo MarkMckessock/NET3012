@@ -21,9 +21,13 @@ configure router interface "system" ipv6 address 2001:db8:a:100::4 prefix-length
 
 configure router interface "toR8" ipv4 primary address 150.4.8.1 prefix-length 30
 configure router interface "toR8" port 1/1/1
+configure router interface "toR8" ipv6
+exit
 
 configure router interface "toR3" ipv4 primary address 150.3.4.2 prefix-length 30
 configure router interface "toR3" port 1/1/2
+configure router interface "toR3" ipv6
+exit
 
 configure router interface "toR2" ipv4 primary address 145.2.4.2 prefix-length 30
 configure router interface "toR2" port 1/1/3
