@@ -31,6 +31,8 @@ exit
 
 configure router interface "toR1" ipv4 primary address 145.1.3.2 prefix-length 30
 configure router interface "toR1" port 1/1/3
+configure router interface "toR1" ipv6
+exit
 commit
 
 # OSPF
