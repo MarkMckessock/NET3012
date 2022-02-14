@@ -1,0 +1,92 @@
+edit-config global
+environment prompt timestamp
+environment more false
+configure system name lab05_mcke0424_R8
+
+# Card bring-up
+configure card 1 card-type iom-v
+configure card 1 mda 1 mda-type m20-v
+commit
+
+# Port bring-up
+configure port 1/1/1 admin-state enable
+configure port 1/1/2 admin-state enable
+commit
+
+# Interface Configuration
+configure router interface "system" ipv4 primary address 8.8.8.8 prefix-length 32
+configure router interface "system" ipv6 address 2001:db8:a:100::8 prefix-length 128
+
+configure router interface "toR4" ipv4 primary address 150.4.8.2 prefix-length 30
+configure router interface "toR4" port 1/1/1
+
+commit
+
+# OSPF
+configure router ospf 0 admin-state enable
+configure router ospf 0 area 0.0.0.0 interface "system" interface-type point-to-point
+configure router ospf 0 area 0.0.0.0 interface "toR4" interface-type point-to-point
+
+configure router ospf3 admin-state enable
+configure router ospf3 0 area 0.0.0.0 interface "system" interface-type point-to-point
+configure router ospf3 0 area 0.0.0.0 interface "toR4" interface-type point-to-point
+commit
+
+# iBGP
+configure router autonomous-system 65002
+configure router bgp group "iBGP" peer-as 65002 next-hop-self true family ipv4 true
+configure router bgp neighbor 3.3.3.3 group "iBGP"
+configure router bgp neighbor 4.4.4.4 group "iBGP"
+configure router bgp neighbor 7.7.7.7 group "iBGP"
+commit
+
+########################## LAB 3 ##########################
+
+configure router bgp neighbor 2001:db8:a:100::3 group "iBGP" family ipv6 true
+configure router bgp neighbor 2001:db8:a:100::4 group "iBGP" family ipv6 true
+configure router bgp neighbor 2001:db8:a:100::7 group "iBGP" family ipv6 true
+commit
+
+########################## LAB 4 ##########################
+
+configure router bgp neighbor 7.7.7.7 group "iBGP" family ipv4 true
+configure router bgp neighbor 7.7.7.7 group "iBGP" family vpn-ipv4 true
+commit
+
+configure port 1/1/2 ethernet mode access encap-type dot1q
+configure service vprn 50 admin-state enable
+configure service vprn 50 customer "1"
+configure service vprn 50 route-distinguisher "65000:50"
+configure service vprn 50 vrf-target community "target:65000:50"
+configure service vprn 50 auto-bind-tunnel resolution filter
+configure service vprn 50 auto-bind-tunnel resolution-filter ldp true
+configure service vprn 50 interface "toCE" ipv4 primary address 10.50.4.10 prefix-length 24
+configure service vprn 50 interface sap 1/1/2:50
+commit
+
+########################## LAB 5 ##########################
+
+configure policy-options prefix-list "Loopback1" prefix 100.100.100.4/32 type exact
+configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 from prefix-list "Loopback1"
+configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 to protocol name bgp-label
+configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 action action-type accept
+configure router bgp group "iBGP" family label-ipv4 true
+configure router bgp group "iBGP" export policy "Loop-toLabelIPv4"
+commit
+
+configure router bgp group "eBGP-VPN-IPv4" multihop 10 peer-as 65001 local-address 100.100.100.4
+configure router bgp group "eBGP-VPN-IPv4" family vpn-ipv4 true
+configure router bgp group "eBGP-VPN-IPv4" ebgp-default-rejection-policy import false export false
+configure router bgp neighbor 100.100.100.1 group "eBGP-VPN-IPv4"
+configure router bgp neighbor 100.100.100.2 group "eBGP-VPN-IPv4"
+commit
+
+######################## CAPTURES #########################
+
+show router bgp summary
+show router bgp routes hunt
+show router bgp router vpn-ipv4 hunt
+show router bgp routes label-ipv4 hunt
+show router tunnel-table
+show router bgp routes evpn ip-prefix
+show service id 50 base
