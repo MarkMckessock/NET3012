@@ -1,7 +1,7 @@
 edit-config global
 environment prompt timestamp
 environment more false
-configure system name lab05_mcke0424_R5
+configure system name lab06_mcke0424_R5
 
 # Card bring-up
 configure card 1 card-type iom-v
@@ -19,6 +19,8 @@ configure router interface "system" ipv6 address 2001:db8:a:100::5 prefix-length
 
 configure router interface "toR1" ipv4 primary address 140.1.5.2 prefix-length 30
 configure router interface "toR1" port 1/1/1
+configure router interface "toR1" ipv6
+exit
 
 commit
 
@@ -71,12 +73,12 @@ configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 from pref
 configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 to protocol name bgp-label
 configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 action action-type accept
 configure router bgp group "iBGP" family label-ipv4 true
-configure router bgp group "iBGP" export policy "Loop-toLabelIPv4"
+configure router bgp group "iBGP" export policy "Loop-to-LabelIPv4"
 commit
 
 configure router bgp group "eBGP-VPN-IPv4" multihop 10 peer-as 65002 local-address 100.100.100.1
 configure router bgp group "eBGP-VPN-IPv4" family vpn-ipv4 true
-configure router bgp group "eBGP-VPN-IPv4" ebgp-default-rejection-policy import false export false
+configure router bgp group "eBGP-VPN-IPv4" ebgp-default-reject-policy import false export false
 configure router bgp neighbor 100.100.100.3 group "eBGP-VPN-IPv4"
 configure router bgp neighbor 100.100.100.4 group "eBGP-VPN-IPv4"
 commit

@@ -1,7 +1,7 @@
 edit-config global
 environment prompt timestamp
 environment more false
-configure system name lab05_mcke0424_R9
+configure system name lab06_mcke0424_R9
 
 # Card bring-up
 configure card 1 card-type iom4-e
@@ -20,9 +20,10 @@ commit
 ########################## LAB 4 ##########################
 
 configure port 1/1/2 ethernet encap-type dot1q
-configure router interface "toVPRN50" ipv4 primaru address 10.50.1.1 prefix-length 24
+configure router interface "toVPRN50" ipv4 primary address 10.50.1.1 prefix-length 24
 configure router interface "toVPRN50" port 1/1/2:50
 configure router static-routes route 10.50.0.0/16 route-type unicast next-hop "10.50.1.10" admin-state enable
+commit
 
 ########################## LAB 6 ##########################
 configure router interface "toVPLS100" port 1/1/2:100
