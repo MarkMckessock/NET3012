@@ -41,6 +41,11 @@ configure router bgp neighbor 4.4.4.4 group "iBGP"
 configure router bgp neighbor 8.8.8.8 group "iBGP"
 commit
 
+# LDP
+configure router ldp interface-parameters interface "toR3" ipv4
+exit
+commit
+
 ########################## LAB 3 ##########################
 
 configure router bgp neighbor 2001:db8:a:100::3 group "iBGP" family ipv6 true
@@ -62,12 +67,14 @@ configure service vprn 50 vrf-target community "target:65000:50"
 configure service vprn 50 auto-bind-tunnel resolution filter
 configure service vprn 50 auto-bind-tunnel resolution-filter ldp true
 configure service vprn 50 interface "toCE" ipv4 primary address 10.50.3.10 prefix-length 24
-configure service vprn 50 interface sap 1/1/2:50
+configure service vprn 50 interface "toCE" sap 1/1/2:50
+exit
 commit
 
 ########################## LAB 5 ##########################
 
 configure policy-options prefix-list "Loopback1" prefix 100.100.100.3/32 type exact
+exit
 configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 from prefix-list "Loopback1"
 configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 to protocol name bgp-label
 configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 action action-type accept
@@ -86,7 +93,7 @@ commit
 
 show router bgp summary
 show router bgp routes hunt
-show router bgp router vpn-ipv4 hunt
+show router bgp routes vpn-ipv4 hunt
 show router bgp routes label-ipv4 hunt
 show router tunnel-table
 show router bgp routes evpn ip-prefix
