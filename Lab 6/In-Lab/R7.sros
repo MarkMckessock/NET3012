@@ -73,6 +73,10 @@ commit
 
 ########################## LAB 5 ##########################
 
+configure router interface "loop-label-ipv4" ipv4 primary address 100.100.100.3 prefix-length 32
+configure router interface "loop-label-ipv4" loopback
+commit
+
 configure policy-options prefix-list "Loopback1" prefix 100.100.100.3/32 type exact
 exit
 configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 from prefix-list "Loopback1"
