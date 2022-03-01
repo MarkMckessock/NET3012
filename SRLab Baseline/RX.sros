@@ -1,0 +1,53 @@
+configure { }
+    configure { log }
+    configure { log filter "1001" }
+    configure { log filter "1001" named-entry "10" }
+    configure { log filter "1001" named-entry "10" description "Collect only events of major severity or higher" }
+    configure { log filter "1001" named-entry "10" action forward }
+    configure { log filter "1001" named-entry "10" match }
+    configure { log filter "1001" named-entry "10" match severity }
+    configure { log filter "1001" named-entry "10" match severity gte major }
+    configure { log log-id "100" }
+    configure { log log-id "100" description "Default Serious Errors Log" }
+    configure { log log-id "100" filter "1001" }
+    configure { log log-id "100" source }
+    configure { log log-id "100" source main true }
+    configure { log log-id "100" destination }
+    configure { log log-id "100" destination memory }
+    configure { log log-id "100" destination memory max-entries 500 }
+    configure { log log-id "99" }
+    configure { log log-id "99" description "Default System Log" }
+    configure { log log-id "99" source }
+    configure { log log-id "99" source main true }
+    configure { log log-id "99" destination }
+    configure { log log-id "99" destination memory }
+    configure { log log-id "99" destination memory max-entries 500 }
+    configure { multicast-management }
+    configure { multicast-management chassis-level }
+    configure { multicast-management chassis-level per-mcast-plane-capacity }
+    configure { multicast-management chassis-level per-mcast-plane-capacity total-capacity dynamic }
+    configure { multicast-management chassis-level per-mcast-plane-capacity mcast-capacity }
+    configure { multicast-management chassis-level per-mcast-plane-capacity mcast-capacity primary-percentage 87.5 }
+    configure { multicast-management chassis-level per-mcast-plane-capacity mcast-capacity secondary-percentage 87.5 }
+    configure { multicast-management chassis-level per-mcast-plane-capacity redundant-mcast-capacity }
+    configure { multicast-management chassis-level per-mcast-plane-capacity redundant-mcast-capacity primary-percentage 87.5 }
+    configure { multicast-management chassis-level per-mcast-plane-capacity redundant-mcast-capacity secondary-percentage 87.5 }
+    configure { system }
+    configure { system management-interface }
+    configure { system management-interface configuration-mode mixed }
+    configure { system management-interface cli }
+    configure { system management-interface cli cli-engine [md-cli classic-cli] }
+    configure { system management-interface cli md-cli }
+    configure { system management-interface cli md-cli auto-config-save true }
+    configure { system management-interface yang-modules }
+    configure { system management-interface yang-modules nokia-submodules true }
+    configure { system management-interface yang-modules nokia-combined-modules false }
+    configure { system login-control }
+    configure { system login-control idle-timeout none }
+    configure { system login-control motd }
+    configure { system login-control motd text "\nThis router was loaded with file: base.cfg for course: DEFAULT/21.7.R1-vsim\n" }
+    configure { system login-control ssh }
+    configure { system login-control ssh inbound-max-sessions 15 }
+    configure { system login-control telnet }
+    configure { system login-control telnet inbound-max-sessions 15 }
+    configure { system security }

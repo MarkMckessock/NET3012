@@ -1,0 +1,50 @@
+edit-config global
+environment prompt timestamp
+environment more false
+configure system name lab07_mcke0424_R10
+
+# Card bring-up
+configure card 1 card-type iom4-e
+configure sfm 1 sfm-type m-sfm5-12
+configure card 1 mda 1 mda-type me10-10gb-sfp+
+commit
+
+# Port bring-up
+configure port 1/1/2 admin-state enable
+commit
+
+# Interface Configuration
+configure router interface "system" ipv4 primary address 10.10.10.10 prefix-length 32
+
+configure router interface "toR6" ipv4 primary address 10.6.10.10 prefix-length 27
+configure router interface "toR6" port 1/1/2
+commit
+
+########################## LAB 1 ##########################
+
+# N/A
+
+########################## LAB 2 ##########################
+
+configure port 1/1/2 ethernet encap-type dot1q
+
+configure router interface "toR6" ipv4 primary address 192.168.10.2 prefix-length 24
+configure router interface "toR6" port 1/1/2:10
+commit
+
+configure router interface "toR6-2" admin-state enable
+configure router interface "toR6-2" ipv4 primary address 192.168.20.2 prefix-length 24
+configure router interface "toR6-2" port 1/1/2:20
+commit
+
+########################## LAB 3 ##########################
+
+configure router interface "toR6-3" admin-state enable
+configure router interface "toR6-3" ipv4 primary address 192.168.30.2 prefix-length 24
+configure router interface "toR6-3" port 1/1/2:30
+commit
+
+configure router interface "toR6-5" admin-state enable
+configure router interface "toR6-5" ipv4 primary address 192.168.50.2 prefix-length 24
+configure router interface "toR6-5" port 1/1/2:50
+commit
