@@ -35,6 +35,13 @@ configure router interface "toR1" ipv6
 exit
 commit
 
+# LDP
+configure router ldp interface-parameters interface "toR4" ipv4
+exit
+configure router ldp interface-parameters interface "toR7" ipv4
+exit
+commit
+
 # OSPF
 configure router ospf 0 admin-state enable
 configure router ospf 0 area 0.0.0.0 interface "system" interface-type point-to-point
