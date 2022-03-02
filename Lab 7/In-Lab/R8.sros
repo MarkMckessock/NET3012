@@ -95,8 +95,8 @@ commit
 
 ########################## LAB 1 ##########################
 
-delete configure router interface "toR12"
-commit
+# delete configure router interface "toR12"
+# commit
 
 ########################## LAB 2 ##########################
 
