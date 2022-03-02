@@ -38,7 +38,8 @@ commit
 
 # RSVP
 configure router rsvp admin-state enable
-configure router rsvp interface "toR4" admin-state enable
+configure router rsvp interface "toR4"
+exit
 
 # MPLS
 configure router mpls admin-state enable
@@ -88,7 +89,8 @@ configure router mpls lsp "toR5-6a" fast-reroute frr-method one-to-one
 # OSPF
 configure router ospf 0 admin-state enable
 configure router ospf 0 traffic-engineering true
-configure router ospf 0 area 0.0.0.0 interface "system" interface-type point-to-point
+configure router ospf 0 area 0.0.0.0 interface "system"
+exit
 configure router ospf 0 area 0.0.0.0 interface "toR4" interface-type point-to-point
 commit
 

@@ -51,10 +51,14 @@ commit
 
 # RSVP
 configure router rsvp admin-state enable
-configure router rsvp interface "toR1" admin-state enable
-configure router rsvp interface "toR3" admin-state enable
-configure router rsvp interface "toR4" admin-state enable
-configure router rsvp interface "toR6" admin-state enable
+configure router rsvp interface "toR1"
+exit
+configure router rsvp interface "toR3"
+exit
+configure router rsvp interface "toR4"
+exit
+configure router rsvp interface "toR6"
+exit
 
 # MPLS
 configure router mpls admin-state enable
@@ -83,23 +87,27 @@ configure router mpls lsp "toR3-1" primary "loose" include-admin-group group "gr
 configure router mpls lsp "toR3-1" primary "loose" exclude-admin-group group "red"
 
 configure router mpls lsp "toR3-6" admin-state enable
-configure router mpls lsp "toR3-6" to 10.10.10.3 type p2p-rsvp primary "toR3-strict" admin-state enable
+configure router mpls lsp "toR3-6" to 10.10.10.3 type p2p-rsvp primary "toR3-strict"
+exit
 configure router mpls lsp "toR3-6" path-computation-method local-cspf
 configure router mpls lsp "toR3-6" fast-reroute frr-method facility
 
 configure router mpls lsp "toR3-6a" admin-state enable
-configure router mpls lsp "toR3-6a" to 10.10.10.3 type p2p-rsvp primary "toR3-strict" admin-state enable
+configure router mpls lsp "toR3-6a" to 10.10.10.3 type p2p-rsvp primary "toR3-strict"
+exit
 configure router mpls lsp "toR3-6a" path-computation-method local-cspf
 configure router mpls lsp "toR3-6a" fast-reroute frr-method one-to-one
 
 configure router mpls lsp "toR6-1" admin-state enable
-configure router mpls lsp "toR6-1" to 10.10.10.6 type p2p-rsvp primary "loose" admin-state enable
+configure router mpls lsp "toR6-1" to 10.10.10.6 type p2p-rsvp primary "loose"
+exit
 commit
 
 # OSPF
 configure router ospf 0 admin-state enable
 configure router ospf 0 traffic-engineering true
-configure router ospf 0 area 0.0.0.0 interface "system" interface-type point-to-point
+configure router ospf 0 area 0.0.0.0 interface "system"
+exit
 configure router ospf 0 area 0.0.0.0 interface "toR1" interface-type point-to-point
 configure router ospf 0 area 0.0.0.0 interface "toR3" interface-type point-to-point
 configure router ospf 0 area 0.0.0.0 interface "toR4" interface-type point-to-point
