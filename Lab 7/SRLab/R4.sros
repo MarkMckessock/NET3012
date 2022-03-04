@@ -30,14 +30,12 @@ configure router interface "toR3" port 1/1/2
 
 configure router interface "toR8" ipv4 primary address 10.4.8.4 prefix-length 27
 configure router interface "toR8" port 1/1/1
-commit
 
 # Admin Groups
 configure routing-options if-attribute admin-group "green" value 1
 configure routing-options if-attribute admin-group "red" value 2
 configure routing-options if-attribute srlg-group "orange" value 1
 configure routing-options if-attribute srlg-group "blue" value 2
-commit
 
 # LDP
 configure router ldp interface-parameters interface "toR1" ipv4
@@ -48,7 +46,6 @@ configure router ldp interface-parameters interface "toR3" ipv4
 exit
 configure router ldp interface-parameters interface "toR8" ipv4
 exit
-commit
 
 # RSVP
 configure router rsvp admin-state enable
@@ -99,7 +96,6 @@ configure router mpls lsp "toR1-6a" fast-reroute frr-method one-to-one
 
 configure router mpls lsp "toR8-1" admin-state enable
 configure router mpls lsp "toR8-1" to 10.10.10.8 type p2p-rsvp primary "loose" admin-state enable
-commit
 
 # OSPF
 configure router ospf 0 admin-state enable
@@ -110,7 +106,6 @@ configure router ospf 0 area 0.0.0.0 interface "toR1" interface-type point-to-po
 configure router ospf 0 area 0.0.0.0 interface "toR2" interface-type point-to-point
 configure router ospf 0 area 0.0.0.0 interface "toR3" interface-type point-to-point
 configure router ospf 0 area 0.0.0.0 interface "toR8" interface-type point-to-point
-commit
 
 ########################## LAB 1 ##########################
 

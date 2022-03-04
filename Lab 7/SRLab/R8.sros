@@ -24,17 +24,14 @@ configure router interface "toR4" port 1/1/1
 
 configure router interface "toR12" ipv4 primary address 10.8.12.8 prefix-length 27
 configure router interface "toR12" port 1/1/2
-commit
 
 # Admin Groups
 configure routing-options if-attribute srlg-group "orange" value 1
 configure routing-options if-attribute srlg-group "blue" value 2
-commit
 
 # LDP
 configure router ldp interface-parameters interface "toR4" ipv4
 exit
-commit
 
 # RSVP
 configure router rsvp admin-state enable
@@ -92,19 +89,16 @@ configure router ospf 0 traffic-engineering true
 configure router ospf 0 area 0.0.0.0 interface "system"
 exit
 configure router ospf 0 area 0.0.0.0 interface "toR4" interface-type point-to-point
-commit
 
 ########################## LAB 1 ##########################
 
 delete configure router interface "toR12"
-commit
 
 ########################## LAB 2 ##########################
 
 configure service sdp 5 admin-state enable
 configure service sdp 5 delivery-type mpls ldp true 
 configure service sdp 5 far-end ip-address 10.10.10.5
-commit
 
 configure port 1/1/2 ethernet mode access encap-type dot1q
 
@@ -114,7 +108,6 @@ configure service epipe "epipe1" spoke-sdp 5:10
 exit
 configure service epipe "epipe1" sap 1/1/2:10
 exit
-commit
 
 configure service epipe "epipe2" admin-state enable
 configure service epipe "epipe2" service-id 20 customer "1"
@@ -122,7 +115,6 @@ configure service epipe "epipe2" spoke-sdp 5:20
 exit
 configure service epipe "epipe2" sap 1/1/2:20
 exit
-commit
 
 ########################## LAB 3 ##########################
 
@@ -130,12 +122,10 @@ commit
 configure service sdp 6 admin-state enable
 configure service sdp 6 delivery-type mpls ldp true 
 configure service sdp 6 far-end ip-address 10.10.10.6
-commit
 
 configure service sdp 7 admin-state enable
 configure service sdp 7 delivery-type mpls ldp true 
 configure service sdp 7 far-end ip-address 10.10.10.7
-commit
 
 configure service customer "200" description "VPLS Customer"
 
@@ -149,8 +139,6 @@ configure service vpls "vpls1" mesh-sdp 7:200
 exit
 configure service vpls "vpls1" sap 1/1/2:30
 exit
-commit
 
 delete configure service vpls "vpls1" sap 1/1/2:30
 configure service vpls "vpls1" sap 1/1/2:*
-commit

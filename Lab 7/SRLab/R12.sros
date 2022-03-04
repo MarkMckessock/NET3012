@@ -18,7 +18,6 @@ configure router interface "system" ipv4 primary address 10.10.10.12 prefix-leng
 
 configure router interface "toR8" ipv4 primary address 10.8.12.12 prefix-length 27
 configure router interface "toR8" port 1/1/2
-commit
 
 ########################## LAB 1 ##########################
 
@@ -30,21 +29,17 @@ configure port 1/1/2 ethernet encap-type dot1q
 
 configure router interface "toR8" ipv4 primary address 192.168.10.4 prefix-length 24
 configure router interface "toR8" port 1/1/2:10
-commit
 
 configure router interface "toR8-2" admin-state enable
 configure router interface "toR8-2" ipv4 primary address 192.168.20.4 prefix-length 24
 configure router interface "toR8-2" port 1/1/2:20
-commit
 
 ########################## LAB 3 ##########################
 
 configure router interface "toR8-3" admin-state enable
 configure router interface "toR8-3" ipv4 primary address 192.168.30.4 prefix-length 24
 configure router interface "toR8-3" port 1/1/2:30
-commit
 
 configure router interface "toR8-5" admin-state enable
 configure router interface "toR8-5" ipv4 primary address 192.168.50.4 prefix-length 24
 configure router interface "toR8-5" port 1/1/2:50
-commit

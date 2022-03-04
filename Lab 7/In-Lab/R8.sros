@@ -103,7 +103,6 @@ commit
 configure service sdp 5 admin-state enable
 configure service sdp 5 delivery-type mpls ldp true 
 configure service sdp 5 far-end ip-address 10.10.10.5
-commit
 
 configure port 1/1/2 ethernet mode access encap-type dot1q
 
@@ -113,7 +112,6 @@ configure service epipe "epipe1" spoke-sdp 5:10
 exit
 configure service epipe "epipe1" sap 1/1/2:10
 exit
-commit
 
 configure service epipe "epipe2" admin-state enable
 configure service epipe "epipe2" service-id 20 customer "1"
@@ -128,12 +126,10 @@ commit
 configure service sdp 6 admin-state enable
 configure service sdp 6 delivery-type mpls ldp true 
 configure service sdp 6 far-end ip-address 10.10.10.6
-commit
 
 configure service sdp 7 admin-state enable
 configure service sdp 7 delivery-type mpls ldp true 
 configure service sdp 7 far-end ip-address 10.10.10.7
-commit
 
 configure service customer "200" description "VPLS Customer"
 
@@ -147,8 +143,6 @@ configure service vpls "vpls1" mesh-sdp 7:200
 exit
 configure service vpls "vpls1" sap 1/1/2:30
 exit
-commit
 
 delete configure service vpls "vpls1" sap 1/1/2:30
 configure service vpls "vpls1" sap 1/1/2:*
-commit
