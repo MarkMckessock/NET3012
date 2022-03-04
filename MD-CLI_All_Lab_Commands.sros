@@ -1,0 +1,126 @@
+##### Basic Configuration #####
+
+edit-configure router
+environment more false						#disable pagination ("press any key to show more")
+environment prompt timezone local			#enable timestamps at every prompt
+discard										#discard uncommitted changes
+compare										#compare uncommitted changes to existing configuration
+validate									#validate uncommitted changes for syntax errors
+commit										#apply uncommitted changes
+
+
+
+##### Card & Port Configuration #####
+configure card <slot-number> card-type <interface-name>
+configure sfm <slot-number> sfm-type <sfm-name>
+configure card <slot-number> mda <mda-number> mda-type <mda-name>
+configure port <port-id> admin-state enable
+configure router interface “system” ipv4 primary address <ipv4-address> prefix-length <prefix-num>
+configure router interface “system” ipv6 address <ipv6-address> prefix-length <prefix-num>
+configure router interface <interface-name> ipv4 primary address <ipv4-address> prefix-length <prefix-num>
+configure router interface <interface-name> port <port-id>
+configure router interface <interface-name> ipv6
+
+
+
+##### OSPF Configuration #####
+configure router ospf <area-number> area <advertised-network> interface <interface-name> interface-type point-to-point
+configure router ospf3 <area-number> area <advertised-network> interface <interface-name> interface-type point-to-point
+Configure router ospf admin-state enable
+
+
+
+##### LDP Configuration #####
+configure router ldp interface-parameters interface <interface-name> ipv4 admin-state enable
+configure router admin-state enable
+
+
+
+##### RSVP Configuration #####
+configure router rsvp interface <interface-name> admin-state enable
+configure router rsvp admin-state enable
+
+
+
+##### MPLS Configuration #####
+configure router mpls admin-state enable
+configure router mpls interface <interface-name> admin-state enable
+configure router mpls lsp <lsp-path-name> admin-state enable
+
+
+
+##### Strict/Loose Path Configuration (MPLS) #####
+configure router mpls path <lsp-path-name> admin-state enable
+configure router mpls lsp <lsp-name> to <system-id> type p2p-rsvp primary <lsp-path-name>
+admin-state enable
+configure router mpls path <lsp-path-name> hop <priority-num> ip-address <ipv4-addr> type strict
+configure router mpls lsp <lsp-path-name> type p2p-rsvp secondary <lsp-path-name> standby
+
+
+
+##### Traffic Engineering #####
+configure router ospf traffic-engineering
+
+
+
+##### Shared Risk Link Group (SRLG) Configuration #####
+configure router mpls lsp <lsp-path-name> admin-state enable
+configure router mpls lsp <lsp-path-name> include-admin-group <color>
+configure router mpls lsp <lsp-path-name> include-admin-group <color>
+configure routing-options if-attribute srlg-group <color> value <num>
+configure router mpls interface <interface-name> srlg-group <color>
+
+
+
+##### Constraint-Based Shortest Path First (CSPF) #####
+configure router mpls lsp <lsp-path-name> path-computation-method local-cspf
+configure router mpls lsp <lsp-path-name> type p2p-rsvp path-computation-method local-cspf
+
+
+
+##### Fast Reroute (FRR) Configuration #####
+configure router mpls lsp <lsp-path-name> fast-reroute frr-method facility
+configure router mpls lsp <lsp-path-name> fast-reroute frr-method one-to-one
+
+
+
+##### BGP Configuration (External) #####
+configure router autonomous-system <AS-number>
+configure router bgp group <bgp-group-name> peer-as <peer-AS-number> family ipv4 true
+
+
+
+##### BGP Configuration (Internal) #####
+configure router bgp neighbor <neighbor-system-id> group <bgp-group-name>
+configure router bgp group <bgp-group-name> peer-as <peer-AS-number> next-hop-self true family ipv4 true
+
+
+
+##### Route Import/Export Policies #####
+configure router bgp group <bgp-group-name> import policy <action>
+configure router bgp group <bgp-group-name> export policy <action>
+
+
+
+##### Troubleshooting & Show commands #####
+show system info
+show router interface
+show router route-table
+show router route-table ipv6
+show router tunnel-table
+show router bgp routes evpn ip-prefix
+show service id 50 base
+show router bgp summary [all]
+show router bgp routes hunt
+show router bgp router vpn-ipv4 hunt
+show router bgp routes label-ipv4 hunt
+show router bgp neighbor
+show router bgp neighbor <ipv4-addr> advertised-routes
+show router bgp neighbor <ipv4-addr> received-routes
+show router mpls lsp [detail]
+show router mpls lsp [“lsp-path-name”] path [detail]
+show router mpls bypass-tunnel protected-lsp detail
+show router rsvp session bypass-tunnel [detail]
+show router rsvp session [detail]
+show router mpls lsp {originate | transit | terminate}
+show router mpls lsp {originate | transit | terminate} lsp-name <“lsp-name”> detail
