@@ -139,7 +139,7 @@ configure service vpls "vpls1" mesh-sdp 7:200
 exit
 configure service vpls "vpls1" mesh-sdp 8:200
 exit
-configure service vpls "vpls1" sap 1/1/2:*
+configure service vpls "vpls1" sap 1/1/2:30
 exit
 
 ########################## LAB 4 ##########################
