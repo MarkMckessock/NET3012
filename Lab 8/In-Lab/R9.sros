@@ -1,0 +1,72 @@
+edit-config global
+environment prompt timestamp
+environment more false
+configure system name lab07_mcke0424_R9
+
+# Card bring-up
+configure card 1 card-type iom-v
+configure card 1 mda 1 mda-type m20-v
+commit
+
+# Port bring-up
+configure port 1/1/2 admin-state enable
+commit
+
+# Interface Configuration
+configure router interface "system" ipv4 primary address 10.10.10.9 prefix-length 32
+
+configure router interface "toR5" ipv4 primary address 10.5.9.9 prefix-length 27
+configure router interface "toR5" port 1/1/2
+
+########################## LAB 1 ##########################
+
+# N/A
+
+########################## LAB 2 ##########################
+
+configure port 1/1/2 ethernet encap-type dot1q
+
+configure router interface "toR5" ipv4 primary address 192.168.10.1 prefix-length 24
+configure router interface "toR5" port 1/1/2:10
+
+configure router interface "toR5-2" admin-state enable
+configure router interface "toR5-2" ipv4 primary address 192.168.20.1 prefix-length 24
+configure router interface "toR5-2" port 1/1/2:20
+
+########################## LAB 3 ##########################
+
+configure router interface "toR5-3" admin-state enable
+configure router interface "toR5-3" ipv4 primary address 192.168.30.1 prefix-length 24
+configure router interface "toR5-3" port 1/1/2:30
+
+configure router interface "toR5-5" admin-state enable
+configure router interface "toR5-5" ipv4 primary address 192.168.50.1 prefix-length 24
+configure router interface "toR5-5" port 1/1/2:50
+
+########################## LAB 4 ##########################
+
+configure router interface "toR5-4" ipv4 primary address 192.168.40.1 prefix-length 24
+configure router interface "toR5-4" port 1/1/2:40
+
+########################## LAB 5 ##########################
+
+# N/A
+
+########################## LAB 6 ##########################
+
+configure filter log 101 destination memory max-entries 500
+configure filter ip-filter "sniffer" default-action accept filter-id 1
+configure filter ip-filter "sniffer" entry 10 log 101
+configure filter ip-filter "sniffer" entry 10 match protocol udp
+configure filter ip-filter "sniffer" entry 10 action accept
+
+configure router interface "mirror" ipv4 primary address 192.168.101.1 prefix-length 24
+configure router interface "mirror" port 1/1/2:101
+configure router interface "mirror" ingress filter ip "sniffer"
+
+# show filter log 101
+
+# After switching to remote
+
+# clear filter log 101
+# show filter log 101

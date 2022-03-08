@@ -1,0 +1,168 @@
+edit-config global
+environment prompt timestamp
+environment more false
+configure system name lab07_mcke0424_R4
+
+# Card bring-up
+configure card 1 card-type iom-v
+configure card 1 mda 1 mda-type m20-v
+commit
+
+# Port bring-up
+configure port 1/1/1 admin-state enable
+configure port 1/1/2 admin-state enable
+configure port 1/1/3 admin-state enable
+configure port 1/1/4 admin-state enable
+commit
+
+# Interface Configuration
+configure router interface "system" ipv4 primary address 10.10.10.4 prefix-length 32
+
+configure router interface "toR1" ipv4 primary address 10.1.4.4 prefix-length 27
+configure router interface "toR1" port 1/1/4
+
+configure router interface "toR2" ipv4 primary address 10.2.4.4 prefix-length 27
+configure router interface "toR2" port 1/1/3
+
+configure router interface "toR3" ipv4 primary address 10.3.4.4 prefix-length 27
+configure router interface "toR3" port 1/1/2
+
+configure router interface "toR8" ipv4 primary address 10.4.8.4 prefix-length 27
+configure router interface "toR8" port 1/1/1
+
+# Admin Groups
+configure routing-options if-attribute admin-group "green" value 1
+configure routing-options if-attribute admin-group "red" value 2
+configure routing-options if-attribute srlg-group "orange" value 1
+configure routing-options if-attribute srlg-group "blue" value 2
+
+# LDP
+configure router ldp interface-parameters interface "toR1" ipv4
+exit
+configure router ldp interface-parameters interface "toR2" ipv4
+exit
+configure router ldp interface-parameters interface "toR3" ipv4
+exit
+configure router ldp interface-parameters interface "toR8" ipv4
+exit
+
+# RSVP
+configure router rsvp admin-state enable
+configure router rsvp interface "toR1"
+exit
+configure router rsvp interface "toR2"
+exit
+configure router rsvp interface "toR3"
+exit
+configure router rsvp interface "toR8"
+exit
+
+# MPLS
+configure router mpls admin-state enable
+configure router mpls interface "toR1" admin-group ["green" "red"]
+configure router mpls interface "toR1" srlg-group "blue"
+configure router mpls interface "toR1" srlg-group "orange"
+
+configure router mpls interface "toR2" admin-group "green"
+configure router mpls interface "toR2" srlg-group "orange"
+
+configure router mpls interface "toR3" admin-group "green"
+configure router mpls interface "toR3" srlg-group "orange"
+
+configure router mpls interface "toR8"
+exit
+
+configure router mpls path "loose" admin-state enable
+configure router mpls path "toR1-strict" admin-state enable
+configure router mpls path "toR1-strict" hop 10 ip-address 10.10.10.3 type strict
+configure router mpls path "toR1-strict" hop 20 ip-address 10.10.10.1 type strict
+
+configure router mpls lsp "toR1-1" admin-state enable
+configure router mpls lsp "toR1-1" to 10.10.10.1 type p2p-rsvp admin-state enable
+configure router mpls lsp "toR1-1" path-computation-method local-cspf
+configure router mpls lsp "toR1-1" primary "loose" include-admin-group group "green"
+configure router mpls lsp "toR1-1" primary "loose" exclude-admin-group group "red"
+
+configure router mpls lsp "toR1-6" admin-state enable
+configure router mpls lsp "toR1-6" to 10.10.10.1 type p2p-rsvp primary "toR1-strict" admin-state enable
+configure router mpls lsp "toR1-6" path-computation-method local-cspf
+configure router mpls lsp "toR1-6" fast-reroute frr-method facility
+
+configure router mpls lsp "toR1-6a" admin-state enable
+configure router mpls lsp "toR1-6a" to 10.10.10.1 type p2p-rsvp primary "toR1-strict" admin-state enable
+configure router mpls lsp "toR1-6a" path-computation-method local-cspf
+configure router mpls lsp "toR1-6a" fast-reroute frr-method one-to-one
+
+configure router mpls lsp "toR8-1" admin-state enable
+configure router mpls lsp "toR8-1" to 10.10.10.8 type p2p-rsvp primary "loose" admin-state enable
+
+# OSPF
+configure router ospf 0 admin-state enable
+configure router ospf 0 traffic-engineering true
+configure router ospf 0 area 0.0.0.0 interface "system"
+exit
+configure router ospf 0 area 0.0.0.0 interface "toR1" interface-type point-to-point
+configure router ospf 0 area 0.0.0.0 interface "toR2" interface-type point-to-point
+configure router ospf 0 area 0.0.0.0 interface "toR3" interface-type point-to-point
+configure router ospf 0 area 0.0.0.0 interface "toR8" interface-type point-to-point
+
+########################## LAB 1 ##########################
+
+# N/A
+
+########################## LAB 2 ##########################
+
+# N/A
+
+########################## LAB 3 ##########################
+
+# N/A
+
+########################## LAB 4 ##########################
+
+configure service sdp 1 admin-state enable delivery-type mpls ldp true
+configure service sdp 1 far-end ip-address 10.10.10.1
+
+configure service sdp 2 admin-state enable delivery-type mpls ldp true
+configure service sdp 2 far-end ip-address 10.10.10.2
+
+configure service sdp 3 admin-state enable delivery-type mpls ldp true
+configure service sdp 3 far-end ip-address 10.10.10.3
+
+configure service sdp 8 admin-state enable delivery-type mpls ldp true
+configure service sdp 8 far-end ip-address 10.10.10.8
+
+configure service customer "300" description "Spoke VPLS Customer"
+configure service vpls "vpls2" admin-state enable
+configure service vpls "vpls2" service-id 300 customer "300"
+configure service vpls "vpls2" mesh-sdp 1:300
+exit
+configure service vpls "vpls2" mesh-sdp 2:300
+exit
+configure service vpls "vpls2" mesh-sdp 3:300
+exit
+configure service mpls "vpls2" spoke-sdp 8:300
+exit
+
+########################## LAB 5 ##########################
+
+# Take initial Task 5 captures before continuing
+
+configure port 1/1/4 ethernet mtu 1514
+
+# Complete Task 5 captures before continuing
+
+delete configure port 1/1/4 ethernet
+
+########################## LAB 6 ##########################
+
+# Take inital Task 6 captures before continuing
+
+configure mirror mirror-dest "Test2" admin-state enable
+configure mirror mirror-dest "Test2" service-id 101
+configure mirror mirror-dest "Test2" spoke-sdp 8:101
+
+configure mirror mirror-source "Test2" admin-state enable
+configure mirror mirror-source "Test2" port 1/1/2 ingress true egress true
+
+# show mirror mirror-dest service-id 101

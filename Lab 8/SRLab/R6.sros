@@ -1,0 +1,221 @@
+edit-config global
+environment prompt timestamp
+environment more false
+configure system name lab07_mcke0424_R6
+
+# Card bring-up
+configure card 1 card-type iom4-e
+configure sfm 1 sfm-type m-sfm5-12
+configure card 1 mda 1 mda-type me10-10gb-sfp+
+commit
+
+# Port bring-up
+configure port 1/1/1 admin-state enable
+configure port 1/1/2 admin-state enable
+configure port 1/1/3 admin-state enable
+configure port 1/1/4 admin-state enable
+commit
+
+# Interface Configuration
+configure router interface "system" ipv4 primary address 10.10.10.6 prefix-length 32
+
+configure router interface "toR2" ipv4 primary address 10.2.6.6 prefix-length 27
+configure router interface "toR2" port 1/1/1
+
+configure router interface "toR10" ipv4 primary address 10.6.10.6 prefix-length 27
+configure router interface "toR10" port 1/1/2
+
+# Admin Groups
+configure routing-options if-attribute srlg-group "orange" value 1
+configure routing-options if-attribute srlg-group "blue" value 2
+
+# LDP
+configure router ldp interface-parameters interface "toR2" ipv4
+exit
+
+# RSVP
+configure router rsvp admin-state enable
+configure router rsvp interface "toR2"
+exit
+
+# MPLS
+configure router mpls admin-state enable
+configure router mpls interface "toR2"
+exit
+
+configure router mpls path "loose" admin-state enable
+configure router mpls path "primary-toR7" admin-state enable
+configure router mpls path "secondary-toR7" admin-state enable
+
+configure router mpls path "toR3strict" admin-state enable
+configure router mpls path "toR3strict" hop 10 ip-address 10.10.10.2 type strict
+configure router mpls path "toR3strict" hop 20 ip-address 10.10.10.4 type strict
+configure router mpls path "toR3strict" hop 30 ip-address 10.10.10.3 type strict
+
+configure router mpls path "toR7-strict" admin-state enable
+configure router mpls path "toR7-strict" hop 10 ip-address 10.10.10.2 type strict
+configure router mpls path "toR7-strict" hop 20 ip-address 10.10.10.4 type strict
+configure router mpls path "toR7-strict" hop 30 ip-address 10.10.10.3 type strict
+configure router mpls path "toR7-strict" hop 40 ip-address 10.10.10.7 type strict
+
+configure router mpls lsp "toR2-1" admin-state enable
+configure router mpls lsp "toR2-1" to 10.10.10.2 type p2p-rsvp primary "loose" admin-state enable
+
+configure router mpls lsp "toR3-4" admin-state enable
+configure router mpls lsp "toR3-4" to 10.10.10.3 type p2p-rsvp primary "toR3strict" admin-state enable
+configure router mpls lsp "toR3-4" to 10.10.10.3 secondary "loose" standby true admin-state enable
+
+configure router mpls lsp "toR7-1" admin-state enable
+configure router mpls lsp "toR7-1" to 10.10.10.7 type p2p-rsvp primary "loose" admin-state enable
+
+configure router mpls lsp "toR7-5" admin-state enable
+configure router mpls lsp "toR7-5" to 10.10.10.7 type p2p-rsvp primary "primary-toR7" admin-state enable
+configure router mpls lsp "toR7-5" path-computation-method local-cspf
+configure router mpls lsp "toR7-5" secondary "secondary-toR7" srlg true standby true admin-state enable
+
+configure router mpls lsp "toR7-6" admin-state enable
+configure router mpls lsp "toR7-6" to 10.10.10.7 type p2p-rsvp primary "toR7-strict" admin-state enable
+configure router mpls lsp "toR7-6" path-computation-method local-cspf
+configure router mpls lsp "toR7-6" fast-reroute frr-method facility
+
+configure router mpls lsp "toR7-6a" admin-state enable
+configure router mpls lsp "toR7-6a" to 10.10.10.7 type p2p-rsvp primary "toR7-strict" admin-state enable
+configure router mpls lsp "toR7-6a" path-computation-method local-cspf
+configure router mpls lsp "toR7-6a" fast-reroute frr-method one-to-one
+
+# OSPF
+configure router ospf 0 admin-state enable
+configure router ospf 0 traffic-engineering true
+configure router ospf 0 area 0.0.0.0 interface "system"
+exit
+configure router ospf 0 area 0.0.0.0 interface "toR2" interface-type point-to-point
+
+########################## LAB 1 ##########################
+
+delete configure router interface "toR10"
+commit
+
+########################## LAB 2 ##########################
+
+configure service sdp 7 admin-state enable
+configure service sdp 7 delivery-type mpls ldp true 
+configure service sdp 7 far-end ip-address 10.10.10.7
+commit
+
+configure port 1/1/2 ethernet mode access encap-type dot1q
+
+configure service epipe "epipe1" admin-state enable
+configure service epipe "epipe1" service-id 10 customer "1"
+configure service epipe "epipe1" spoke-sdp 7:10
+exit
+configure service epipe "epipe1" sap 1/1/2:10
+exit
+commit
+
+configure service epipe "epipe2" admin-state enable
+configure service epipe "epipe2" service-id 20 customer "1"
+configure service epipe "epipe2" spoke-sdp 7:20
+exit
+configure service epipe "epipe2" sap 1/1/2:20
+exit
+commit
+
+########################## LAB 3 ##########################
+
+configure service sdp 5 admin-state enable
+configure service sdp 5 delivery-type mpls ldp true 
+configure service sdp 5 far-end ip-address 10.10.10.5
+
+configure service sdp 8 admin-state enable
+configure service sdp 8 delivery-type mpls ldp true 
+configure service sdp 8 far-end ip-address 10.10.10.8
+
+configure service customer "200" description "VPLS Customer"
+
+configure service vpls "vpls1" admin-state enable
+configure service vpls "vpls1" service-id 200 customer "200"
+configure service vpls "vpls1" mesh-sdp 5:200
+exit
+configure service vpls "vpls1" mesh-sdp 7:200
+exit
+configure service vpls "vpls1" mesh-sdp 8:200
+exit
+configure service vpls "vpls1" sap 1/1/2:*
+exit
+
+########################## LAB 4 ##########################
+
+configure service customer "300" description "Spoke VPLS Customer"
+
+configure service sdp 2 admin-state enable delivery-type mpls ldp true
+configure service sdp 2 far-end ip-address 10.10.10.2
+
+configure service epipe "epipe3" admin-state enable
+configure service epipe "epipe3" service-id 300 customer "300"
+configure service epipe "epipe3" spoke-sdp 2:300
+exit
+configure service epipe "epipe3" sap 1/1/2:40
+exit
+
+########################## LAB 5 ##########################
+
+# //oam sdp-ping 7
+# //oam sdp-ping 7 resp-sdp 6
+# //oam sdp-mtu 7 size-inc 9170 9200 step 10
+# show service service-using
+# show service id 10 base
+# //oam svc-ping 10.10.10.7 service 10
+# //oam svc-ping 10.10.10.7 service 10 local-sdp remote-sdp
+
+# Change MTU on P router
+
+# show service id 10 all
+# //oam sdp-mtu 7 size-inc 1450 1550 step 10
+
+# Ping from CE
+
+configure router mpls lsp "R6-R7" admin-state enable
+configure router mpls lsp "R6-R7" to 10.10.10.7 type p2p-rsvp primary "loose"
+exit
+
+configure service sdp 7 admin-state enable delivery-type mpls ldp false
+configure service sdp 7 lsp "R6-R7" {}
+
+# show service sdp 7
+
+configure router mpls lsp "R6-R7" adspec true
+
+# show service sdp 7
+# show service id 10 all
+
+configure service epipe "epipe1" service-mtu 1492
+
+# After resetting MTU on P router
+tools perform router mpls resignal lsp "R6-R7" path "loose"
+
+########################## LAB 6 ##########################
+
+configure mirror mirror-dest "Test" admin-state enable
+configure mirror mirror-dest "Test" service-id 101
+configure mirror mirror-dest "Test" sap 1/1/2:101
+exit
+
+configure mirror mirror-source "Test" admin-state enable
+configure mirror mirror-source "Test" port 1/1/1 ingress true egress true
+
+# show mirror mirror-dest service-id 101
+# show mirror mirror-source service-id 101
+
+# show filter log 101 (on CE)
+
+# Configure remote mirroring on P
+
+configure mirror delete mirror-source "Test"
+configure mirror mirror-source "Test" remote-source far-end 10.10.10.2 vc-id 101
+
+# show mirror mirror-dest service-id 101 (on P)
+
+# show mirror mirror-dest service-id 101
+# show mirror mirror-source service-id 101
+
+# show filter log 101 (on CE)
