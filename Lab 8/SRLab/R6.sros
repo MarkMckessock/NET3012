@@ -179,7 +179,8 @@ configure router mpls lsp "R6-R7" to 10.10.10.7 type p2p-rsvp primary "loose"
 exit
 
 configure service sdp 7 admin-state enable delivery-type mpls ldp false
-configure service sdp 7 lsp "R6-R7" {}
+configure service sdp 7 lsp "R6-R7" 
+exit
 
 # show service sdp 7
 
@@ -211,7 +212,7 @@ configure mirror mirror-source "Test" port 1/1/1 ingress true egress true
 # Configure remote mirroring on P
 
 configure mirror delete mirror-source "Test"
-configure mirror mirror-source "Test" remote-source far-end 10.10.10.2 vc-id 101
+configure mirror mirror-dest "Test" remote-source far-end 10.10.10.2 vc-id 101
 
 # show mirror mirror-dest service-id 101 (on P)
 
