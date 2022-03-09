@@ -1,7 +1,7 @@
 edit-config global
 environment prompt timestamp
 environment more false
-configure system name lab07_mcke0424_R9
+configure system name lab08_mcke0424_R9
 
 # Card bring-up
 configure card 1 card-type iom-v

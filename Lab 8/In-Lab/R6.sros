@@ -1,7 +1,7 @@
 edit-config global
 environment prompt timestamp
 environment more false
-configure system name lab07_mcke0424_R6
+configure system name lab08_mcke0424_R6
 
 # Card bring-up
 configure card 1 card-type iom-v
@@ -58,27 +58,33 @@ configure router mpls path "toR7-strict" hop 30 ip-address 10.10.10.3 type stric
 configure router mpls path "toR7-strict" hop 40 ip-address 10.10.10.7 type strict
 
 configure router mpls lsp "toR2-1" admin-state enable
-configure router mpls lsp "toR2-1" to 10.10.10.2 type p2p-rsvp primary "loose" admin-state enable
+configure router mpls lsp "toR2-1" to 10.10.10.2 type p2p-rsvp primary "loose"
+exit
 
 configure router mpls lsp "toR3-4" admin-state enable
-configure router mpls lsp "toR3-4" to 10.10.10.3 type p2p-rsvp primary "toR3strict" admin-state enable
-configure router mpls lsp "toR3-4" to 10.10.10.3 secondary "loose" standby true admin-state enable
+configure router mpls lsp "toR3-4" to 10.10.10.3 type p2p-rsvp primary "toR3strict"
+exit
+configure router mpls lsp "toR3-4" to 10.10.10.3 secondary "loose" standby true
 
 configure router mpls lsp "toR7-1" admin-state enable
-configure router mpls lsp "toR7-1" to 10.10.10.7 type p2p-rsvp primary "loose" admin-state enable
+configure router mpls lsp "toR7-1" to 10.10.10.7 type p2p-rsvp primary "loose"
+exit
 
 configure router mpls lsp "toR7-5" admin-state enable
-configure router mpls lsp "toR7-5" to 10.10.10.7 type p2p-rsvp primary "primary-toR7" admin-state enable
+configure router mpls lsp "toR7-5" to 10.10.10.7 type p2p-rsvp primary "primary-toR7"
+exit
 configure router mpls lsp "toR7-5" path-computation-method local-cspf
-configure router mpls lsp "toR7-5" secondary "secondary-toR7" srlg true standby true admin-state enable
+configure router mpls lsp "toR7-5" secondary "secondary-toR7" srlg true standby true
 
 configure router mpls lsp "toR7-6" admin-state enable
-configure router mpls lsp "toR7-6" to 10.10.10.7 type p2p-rsvp primary "toR7-strict" admin-state enable
+configure router mpls lsp "toR7-6" to 10.10.10.7 type p2p-rsvp primary "toR7-strict"
+exit
 configure router mpls lsp "toR7-6" path-computation-method local-cspf
 configure router mpls lsp "toR7-6" fast-reroute frr-method facility
 
 configure router mpls lsp "toR7-6a" admin-state enable
-configure router mpls lsp "toR7-6a" to 10.10.10.7 type p2p-rsvp primary "toR7-strict" admin-state enable
+configure router mpls lsp "toR7-6a" to 10.10.10.7 type p2p-rsvp primary "toR7-strict"
+exit
 configure router mpls lsp "toR7-6a" path-computation-method local-cspf
 configure router mpls lsp "toR7-6a" fast-reroute frr-method one-to-one
 
