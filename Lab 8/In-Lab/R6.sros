@@ -98,14 +98,12 @@ configure router ospf 0 area 0.0.0.0 interface "toR2" interface-type point-to-po
 ########################## LAB 1 ##########################
 
 delete configure router interface "toR10"
-commit
 
 ########################## LAB 2 ##########################
 
 configure service sdp 7 admin-state enable
 configure service sdp 7 delivery-type mpls ldp true 
 configure service sdp 7 far-end ip-address 10.10.10.7
-commit
 
 configure port 1/1/2 ethernet mode access encap-type dot1q
 
@@ -115,7 +113,6 @@ configure service epipe "epipe1" spoke-sdp 7:10
 exit
 configure service epipe "epipe1" sap 1/1/2:10
 exit
-commit
 
 configure service epipe "epipe2" admin-state enable
 configure service epipe "epipe2" service-id 20 customer "1"
@@ -123,7 +120,6 @@ configure service epipe "epipe2" spoke-sdp 7:20
 exit
 configure service epipe "epipe2" sap 1/1/2:20
 exit
-commit
 
 ########################## LAB 3 ##########################
 
@@ -145,6 +141,7 @@ configure service vpls "vpls1" mesh-sdp 7:200
 exit
 configure service vpls "vpls1" mesh-sdp 8:200
 exit
+delete configure service vpls "vpls1" sap 1/1/2:*
 configure service vpls "vpls1" sap 1/1/2:30
 exit
 
