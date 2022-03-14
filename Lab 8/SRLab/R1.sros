@@ -165,6 +165,7 @@ delete configure port 1/1/4 ethernet
 configure mirror mirror-dest "Test2" admin-state enable
 configure mirror mirror-dest "Test2" service-id 101
 configure mirror mirror-dest "Test2" spoke-sdp 5:101
+exit
 
 configure mirror mirror-source "Test2" admin-state enable
 configure mirror mirror-source "Test2" port 1/1/2 ingress true egress true
