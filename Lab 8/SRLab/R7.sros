@@ -59,27 +59,33 @@ configure router mpls path "toR6-strict" hop 30 ip-address 10.10.10.2 type stric
 configure router mpls path "toR6-strict" hop 40 ip-address 10.10.10.6 type strict
 
 configure router mpls lsp "toR3-1" admin-state enable
-configure router mpls lsp "toR3-1" to 10.10.10.3 type p2p-rsvp primary "loose" admin-state enable
+configure router mpls lsp "toR3-1" to 10.10.10.3 type p2p-rsvp primary "loose"
+exit
 
 configure router mpls lsp "toR2-4" admin-state enable
-configure router mpls lsp "toR2-4" to 10.10.10.2 type p2p-rsvp primary "toR2strict" admin-state enable
-configure router mpls lsp "toR2-4" to 10.10.10.2 secondary "loose" standby true admin-state enable
+configure router mpls lsp "toR2-4" to 10.10.10.2 type p2p-rsvp primary "toR2strict"
+exit
+configure router mpls lsp "toR2-4" to 10.10.10.2 secondary "loose" standby true
 
 configure router mpls lsp "toR8-1" admin-state enable
-configure router mpls lsp "toR8-1" to 10.10.10.8 type p2p-rsvp primary "loose" admin-state enable
+configure router mpls lsp "toR8-1" to 10.10.10.8 type p2p-rsvp primary "loose"
+exit
 
 configure router mpls lsp "toR6-5" admin-state enable
-configure router mpls lsp "toR6-5" to 10.10.10.6 type p2p-rsvp primary "primary-toR6" admin-state enable
+configure router mpls lsp "toR6-5" to 10.10.10.6 type p2p-rsvp primary "primary-toR6"
+exit
 configure router mpls lsp "toR6-5" path-computation-method local-cspf
-configure router mpls lsp "toR6-5" secondary "secondary-toR6" srlg true standby true admin-state enable
+configure router mpls lsp "toR6-5" secondary "secondary-toR6" srlg true standby true
 
 configure router mpls lsp "toR6-6" admin-state enable
-configure router mpls lsp "toR6-6" to 10.10.10.6 type p2p-rsvp primary "toR6-strict" admin-state enable
+configure router mpls lsp "toR6-6" to 10.10.10.6 type p2p-rsvp primary "toR6-strict"
+exit
 configure router mpls lsp "toR6-6" path-computation-method local-cspf
 configure router mpls lsp "toR6-6" fast-reroute frr-method facility
 
 configure router mpls lsp "toR6-6a" admin-state enable
-configure router mpls lsp "toR6-6a" to 10.10.10.6 type p2p-rsvp primary "toR6-strict" admin-state enable
+configure router mpls lsp "toR6-6a" to 10.10.10.6 type p2p-rsvp primary "toR6-strict"
+exit
 configure router mpls lsp "toR6-6a" path-computation-method local-cspf
 configure router mpls lsp "toR6-6a" fast-reroute frr-method one-to-one
 
@@ -136,6 +142,7 @@ configure service vpls "vpls1" mesh-sdp 6:200
 exit
 configure service vpls "vpls1" mesh-sdp 8:200
 exit
+delete configure service vpls "vpls1" sap 1/1/2:*
 configure service vpls "vpls1" sap 1/1/2:30
 exit
 

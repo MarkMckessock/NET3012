@@ -59,27 +59,33 @@ configure router mpls path "toR7-strict" hop 30 ip-address 10.10.10.3 type stric
 configure router mpls path "toR7-strict" hop 40 ip-address 10.10.10.7 type strict
 
 configure router mpls lsp "toR2-1" admin-state enable
-configure router mpls lsp "toR2-1" to 10.10.10.2 type p2p-rsvp primary "loose" admin-state enable
+configure router mpls lsp "toR2-1" to 10.10.10.2 type p2p-rsvp primary "loose"
+exit
 
 configure router mpls lsp "toR3-4" admin-state enable
-configure router mpls lsp "toR3-4" to 10.10.10.3 type p2p-rsvp primary "toR3strict" admin-state enable
-configure router mpls lsp "toR3-4" to 10.10.10.3 secondary "loose" standby true admin-state enable
+configure router mpls lsp "toR3-4" to 10.10.10.3 type p2p-rsvp primary "toR3strict"
+exit
+configure router mpls lsp "toR3-4" to 10.10.10.3 secondary "loose" standby true
 
 configure router mpls lsp "toR7-1" admin-state enable
-configure router mpls lsp "toR7-1" to 10.10.10.7 type p2p-rsvp primary "loose" admin-state enable
+configure router mpls lsp "toR7-1" to 10.10.10.7 type p2p-rsvp primary "loose"
+exit
 
 configure router mpls lsp "toR7-5" admin-state enable
-configure router mpls lsp "toR7-5" to 10.10.10.7 type p2p-rsvp primary "primary-toR7" admin-state enable
+configure router mpls lsp "toR7-5" to 10.10.10.7 type p2p-rsvp primary "primary-toR7"
+exit
 configure router mpls lsp "toR7-5" path-computation-method local-cspf
-configure router mpls lsp "toR7-5" secondary "secondary-toR7" srlg true standby true admin-state enable
+configure router mpls lsp "toR7-5" secondary "secondary-toR7" srlg true standby true
 
 configure router mpls lsp "toR7-6" admin-state enable
-configure router mpls lsp "toR7-6" to 10.10.10.7 type p2p-rsvp primary "toR7-strict" admin-state enable
+configure router mpls lsp "toR7-6" to 10.10.10.7 type p2p-rsvp primary "toR7-strict"
+exit
 configure router mpls lsp "toR7-6" path-computation-method local-cspf
 configure router mpls lsp "toR7-6" fast-reroute frr-method facility
 
 configure router mpls lsp "toR7-6a" admin-state enable
-configure router mpls lsp "toR7-6a" to 10.10.10.7 type p2p-rsvp primary "toR7-strict" admin-state enable
+configure router mpls lsp "toR7-6a" to 10.10.10.7 type p2p-rsvp primary "toR7-strict"
+exit
 configure router mpls lsp "toR7-6a" path-computation-method local-cspf
 configure router mpls lsp "toR7-6a" fast-reroute frr-method one-to-one
 
@@ -93,14 +99,12 @@ configure router ospf 0 area 0.0.0.0 interface "toR2" interface-type point-to-po
 ########################## LAB 1 ##########################
 
 delete configure router interface "toR10"
-commit
 
 ########################## LAB 2 ##########################
 
 configure service sdp 7 admin-state enable
 configure service sdp 7 delivery-type mpls ldp true 
 configure service sdp 7 far-end ip-address 10.10.10.7
-commit
 
 configure port 1/1/2 ethernet mode access encap-type dot1q
 
@@ -110,7 +114,6 @@ configure service epipe "epipe1" spoke-sdp 7:10
 exit
 configure service epipe "epipe1" sap 1/1/2:10
 exit
-commit
 
 configure service epipe "epipe2" admin-state enable
 configure service epipe "epipe2" service-id 20 customer "1"
@@ -118,7 +121,6 @@ configure service epipe "epipe2" spoke-sdp 7:20
 exit
 configure service epipe "epipe2" sap 1/1/2:20
 exit
-commit
 
 ########################## LAB 3 ##########################
 
@@ -140,6 +142,7 @@ configure service vpls "vpls1" mesh-sdp 7:200
 exit
 configure service vpls "vpls1" mesh-sdp 8:200
 exit
+delete configure service vpls "vpls1" sap 1/1/2:*
 configure service vpls "vpls1" sap 1/1/2:30
 exit
 
@@ -179,7 +182,7 @@ configure router mpls lsp "R6-R7" to 10.10.10.7 type p2p-rsvp primary "loose"
 exit
 
 configure service sdp 7 admin-state enable delivery-type mpls ldp false
-configure service sdp 7 lsp "R6-R7" 
+configure service sdp 7 lsp "R6-R7"
 exit
 
 # show service sdp 7

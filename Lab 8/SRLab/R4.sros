@@ -85,17 +85,20 @@ configure router mpls lsp "toR1-1" primary "loose" include-admin-group group "gr
 configure router mpls lsp "toR1-1" primary "loose" exclude-admin-group group "red"
 
 configure router mpls lsp "toR1-6" admin-state enable
-configure router mpls lsp "toR1-6" to 10.10.10.1 type p2p-rsvp primary "toR1-strict" admin-state enable
+configure router mpls lsp "toR1-6" to 10.10.10.1 type p2p-rsvp primary "toR1-strict"
+exit
 configure router mpls lsp "toR1-6" path-computation-method local-cspf
 configure router mpls lsp "toR1-6" fast-reroute frr-method facility
 
 configure router mpls lsp "toR1-6a" admin-state enable
-configure router mpls lsp "toR1-6a" to 10.10.10.1 type p2p-rsvp primary "toR1-strict" admin-state enable
+configure router mpls lsp "toR1-6a" to 10.10.10.1 type p2p-rsvp primary "toR1-strict"
+exit
 configure router mpls lsp "toR1-6a" path-computation-method local-cspf
 configure router mpls lsp "toR1-6a" fast-reroute frr-method one-to-one
 
 configure router mpls lsp "toR8-1" admin-state enable
-configure router mpls lsp "toR8-1" to 10.10.10.8 type p2p-rsvp primary "loose" admin-state enable
+configure router mpls lsp "toR8-1" to 10.10.10.8 type p2p-rsvp primary "loose"
+exit
 
 # OSPF
 configure router ospf 0 admin-state enable

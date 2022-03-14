@@ -40,7 +40,6 @@ configure router interface "toR6-3" admin-state enable
 configure router interface "toR6-3" ipv4 primary address 192.168.30.2 prefix-length 24
 configure router interface "toR6-3" port 1/1/2:30
 
-
 configure router interface "toR6-5" admin-state enable
 configure router interface "toR6-5" ipv4 primary address 192.168.50.2 prefix-length 24
 configure router interface "toR6-5" port 1/1/2:50

@@ -59,27 +59,33 @@ configure router mpls path "toR8-strict" hop 30 ip-address 10.10.10.4 type stric
 configure router mpls path "toR8-strict" hop 40 ip-address 10.10.10.8 type strict
 
 configure router mpls lsp "toR1-1" admin-state enable
-configure router mpls lsp "toR1-1" to 10.10.10.1 type p2p-rsvp primary "loose" admin-state enable
+configure router mpls lsp "toR1-1" to 10.10.10.1 type p2p-rsvp primary "loose"
+exit
 
 configure router mpls lsp "toR4-4" admin-state enable
-configure router mpls lsp "toR4-4" to 10.10.10.4 type p2p-rsvp primary "toR4strict" admin-state enable
-configure router mpls lsp "toR4-4" to 10.10.10.4 secondary "loose" standby true admin-state enable
+configure router mpls lsp "toR4-4" to 10.10.10.4 type p2p-rsvp primary "toR4strict"
+exit
+configure router mpls lsp "toR4-4" to 10.10.10.4 secondary "loose" standby true
 
 configure router mpls lsp "toR6-1" admin-state enable
-configure router mpls lsp "toR6-1" to 10.10.10.6 type p2p-rsvp primary "loose" admin-state enable
+configure router mpls lsp "toR6-1" to 10.10.10.6 type p2p-rsvp primary "loose"
+exit
 
 configure router mpls lsp "toR8-5" admin-state enable
-configure router mpls lsp "toR8-5" to 10.10.10.8 type p2p-rsvp admin-state enable
+configure router mpls lsp "toR8-5" to 10.10.10.8 type p2p-rsvp
+exit
 configure router mpls lsp "toR8-5" path-computation-method local-cspf
-configure router mpls lsp "toR8-5" secondary "secondary-toR8" srlg true standby true admin-state enable
+configure router mpls lsp "toR8-5" secondary "secondary-toR8" srlg true standby true
 
 configure router mpls lsp "toR8-6" admin-state enable
-configure router mpls lsp "toR8-6" to 10.10.10.8 type p2p-rsvp primary "toR8-strict" admin-state enable
+configure router mpls lsp "toR8-6" to 10.10.10.8 type p2p-rsvp primary "toR8-strict"
+exit
 configure router mpls lsp "toR8-6" path-computation-method local-cspf
 configure router mpls lsp "toR8-6" fast-reroute frr-method facility
 
 configure router mpls lsp "toR8-6a" admin-state enable
-configure router mpls lsp "toR8-6a" to 10.10.10.8 type p2p-rsvp primary "toR8-strict" admin-state enable
+configure router mpls lsp "toR8-6a" to 10.10.10.8 type p2p-rsvp primary "toR8-strict"
+exit
 configure router mpls lsp "toR8-6a" path-computation-method local-cspf
 configure router mpls lsp "toR8-6a" fast-reroute frr-method one-to-one
 
@@ -136,6 +142,7 @@ configure service vpls "vpls1" mesh-sdp 7:200
 exit
 configure service vpls "vpls1" mesh-sdp 8:200
 exit
+delete configure service vpls "vpls1" sap 1/1/2:*
 configure service vpls "vpls1" sap 1/1/2:30
 exit
 
@@ -216,4 +223,3 @@ configure mirror mirror-dest "Test" remote-source far-end 10.10.10.1 vc-id 101
 # show mirror mirror-source service-id 101
 
 # show filter log 101 (on CE)
-
