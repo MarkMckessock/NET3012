@@ -1,0 +1,173 @@
+edit-config global
+environment prompt timestamp
+environment more false
+configure system name lab09_mcke0424_R3
+
+# Card bring-up
+configure card 1 card-type iom4-e
+configure sfm 1 sfm-type m-sfm5-12
+configure card 1 mda 1 mda-type me10-10gb-sfp+
+commit
+
+# Port bring-up
+configure port 1/1/1 admin-state enable
+configure port 1/1/2 admin-state enable
+configure port 1/1/3 admin-state enable
+configure port 1/1/4 admin-state enable
+commit
+
+# Interface Configuration
+configure router interface "system" ipv4 primary address 10.10.10.3 prefix-length 32
+
+configure router interface "toR1" ipv4 primary address 10.1.3.3 prefix-length 27
+configure router interface "toR1" port 1/1/3
+
+configure router interface "toR2" ipv4 primary address 10.2.3.3 prefix-length 27
+configure router interface "toR2" port 1/1/4
+
+configure router interface "toR4" ipv4 primary address 10.3.4.3 prefix-length 27
+configure router interface "toR4" port 1/1/2
+
+configure router interface "toR7" ipv4 primary address 10.3.7.3 prefix-length 27
+configure router interface "toR7" port 1/1/1
+
+# Admin Groups
+configure routing-options if-attribute admin-group "green" value 1
+configure routing-options if-attribute admin-group "red" value 2
+configure routing-options if-attribute srlg-group "orange" value 1
+configure routing-options if-attribute srlg-group "blue" value 2
+
+# LDP
+configure router ldp interface-parameters interface "toR1" ipv4
+exit
+configure router ldp interface-parameters interface "toR2" ipv4
+exit
+configure router ldp interface-parameters interface "toR4" ipv4
+exit
+configure router ldp interface-parameters interface "toR7" ipv4
+exit
+
+# RSVP
+configure router rsvp admin-state enable
+configure router rsvp interface "toR1"
+exit
+configure router rsvp interface "toR2"
+exit
+configure router rsvp interface "toR4"
+exit
+configure router rsvp interface "toR7"
+exit
+
+# MPLS
+configure router mpls admin-state enable
+configure router mpls interface "toR1" admin-group "green"
+configure router mpls interface "toR1" srlg-group "orange"
+
+configure router mpls interface "toR2" admin-group ["green" "red"]
+configure router mpls interface "toR2" srlg-group "blue"
+configure router mpls interface "toR2" srlg-group "orange"
+
+configure router mpls interface "toR4" admin-group "green"
+configure router mpls interface "toR4" srlg-group "orange"
+
+configure router mpls interface "toR7"
+exit
+
+configure router mpls path "loose" admin-state enable
+configure router mpls path "toR2-strict" admin-state enable
+configure router mpls path "toR2-strict" hop 10 ip-address 10.10.10.1 type strict
+configure router mpls path "toR2-strict" hop 20 ip-address 10.10.10.2 type strict
+
+configure router mpls lsp "toR4-1" admin-state enable
+configure router mpls lsp "toR4-1" to 10.10.10.4 type p2p-rsvp admin-state enable
+configure router mpls lsp "toR4-1" path-computation-method local-cspf
+configure router mpls lsp "toR4-1" primary "loose" include-admin-group group "green"
+configure router mpls lsp "toR4-1" primary "loose" exclude-admin-group group "red"
+
+configure router mpls lsp "toR2-6" admin-state enable
+configure router mpls lsp "toR2-6" to 10.10.10.2 type p2p-rsvp primary "toR2-strict" admin-state enable
+configure router mpls lsp "toR2-6" path-computation-method local-cspf
+configure router mpls lsp "toR2-6" fast-reroute frr-method facility
+
+configure router mpls lsp "toR2-6a" admin-state enable
+configure router mpls lsp "toR2-6a" to 10.10.10.2 type p2p-rsvp primary "toR2-strict" admin-state enable
+configure router mpls lsp "toR2-6a" path-computation-method local-cspf
+configure router mpls lsp "toR2-6a" fast-reroute frr-method one-to-one
+
+configure router mpls lsp "toR7-1" admin-state enable
+configure router mpls lsp "toR7-1" to 10.10.10.7 type p2p-rsvp primary "loose" admin-state enable
+
+# OSPF
+configure router ospf 0 admin-state enable
+configure router ospf 0 traffic-engineering true
+configure router ospf 0 area 0.0.0.0 interface "system"
+exit
+configure router ospf 0 area 0.0.0.0 interface "toR1" interface-type point-to-point
+configure router ospf 0 area 0.0.0.0 interface "toR2" interface-type point-to-point
+configure router ospf 0 area 0.0.0.0 interface "toR4" interface-type point-to-point
+configure router ospf 0 area 0.0.0.0 interface "toR7" interface-type point-to-point
+
+########################## LAB 1 ##########################
+
+# N/A
+
+########################## LAB 2 ##########################
+
+# N/A
+
+########################## LAB 3 ##########################
+
+# N/A
+
+########################## LAB 4 ##########################
+
+configure service sdp 1 admin-state enable delivery-type mpls ldp true
+configure service sdp 1 far-end ip-address 10.10.10.1
+
+configure service sdp 2 admin-state enable delivery-type mpls ldp true
+configure service sdp 2 far-end ip-address 10.10.10.2
+
+configure service sdp 4 admin-state enable delivery-type mpls ldp true
+configure service sdp 4 far-end ip-address 10.10.10.4
+
+configure service sdp 7 admin-state enable delivery-type mpls ldp true
+configure service sdp 7 far-end ip-address 10.10.10.7
+
+configure service customer "300" description "Spoke VPLS Customer"
+configure service vpls "vpls2" admin-state enable
+configure service vpls "vpls2" service-id 300 customer "300"
+configure service vpls "vpls2" mesh-sdp 1:300
+exit
+configure service vpls "vpls2" mesh-sdp 2:300
+exit
+configure service vpls "vpls2" mesh-sdp 4:300
+exit
+configure service vpls "vpls2" spoke-sdp 7:300
+exit
+
+########################## LAB 5 ##########################
+
+# N/A
+
+########################## LAB 6 ##########################
+
+configure mirror mirror-dest "Test2" admin-state enable
+configure mirror mirror-dest "Test2" service-id 101
+configure mirror mirror-dest "Test2" spoke-sdp 7:101
+
+configure mirror mirror-source "Test2" admin-state enable
+configure mirror mirror-source "Test2" port 1/1/2 ingress true egress true
+
+########################## LAB 7 ##########################
+
+# N/A
+
+########################## LAB 8 ##########################
+
+configure service ies "IES 600" admin-state enable
+configure service ies "IES 600" service-id 60 customer "1"
+configure service ies "IES 600" interface "IES_600" spoke-sdp 7:3000
+exit
+configure service ies "IES 600" interface "IES_600" ipv4 primary address 172.17.3.1 prefix-length 24
+
+configure router ospf 0 area 0.0.0.0 interface "IES_600" interface-type point-to-point
