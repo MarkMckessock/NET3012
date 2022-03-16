@@ -150,12 +150,7 @@ exit
 
 ########################## LAB 6 ##########################
 
-configure mirror mirror-dest "Test2" admin-state enable
-configure mirror mirror-dest "Test2" service-id 101
-configure mirror mirror-dest "Test2" spoke-sdp 7:101
-
-configure mirror mirror-source "Test2" admin-state enable
-configure mirror mirror-source "Test2" port 1/1/2 ingress true egress true
+# N/A
 
 ########################## LAB 7 ##########################
 
@@ -164,9 +159,10 @@ configure mirror mirror-source "Test2" port 1/1/2 ingress true egress true
 ########################## LAB 8 ##########################
 
 configure service ies "IES 600" admin-state enable
-configure service ies "IES 600" service-id 60 customer "1"
+configure service ies "IES 600" service-id 600 customer "1"
 configure service ies "IES 600" interface "IES_600" spoke-sdp 7:3000
 exit
 configure service ies "IES 600" interface "IES_600" ipv4 primary address 172.17.3.1 prefix-length 24
+configure service ies "IES 600" interface "IES_600" ip-mtu 1500
 
 configure router ospf 0 area 0.0.0.0 interface "IES_600" interface-type point-to-point

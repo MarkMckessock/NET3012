@@ -168,12 +168,7 @@ configure router mpls lsp "R7-R6" adspec true
 
 ########################## LAB 6 ##########################
 
-configure mirror mirror-dest "Test" admin-state enable
-configure mirror mirror-dest "Test" service-id 101
-configure mirror mirror-dest "Test" sap 1/1/2:101
-exit
-
-configure mirror mirror-dest "Test" remote-source far-end 10.10.10.3 vc-id 101
+# N/A
 
 ########################## LAB 7 ##########################
 
@@ -182,15 +177,16 @@ configure service customer "500" description "IES Customer"
 configure service ies "IES 1" admin-state enable
 configure service ies "IES 1" service-id 500 customer "500"
 configure service ies "IES 1" interface "to-Site1" sap 1/1/2:60
+exit
 configure service ies "IES 1" interface "to-Site1" ipv4 primary address 172.16.3.1 prefix-length 24
 
 configure router ospf 0 area 0.0.0.0 interface "to-Site1" interface-type point-to-point
 
 ######################### LAB 8 ##########################
 
-configure service "vpls2" admin-state enable
-configure service "vpls2" service-id 3000 customer "1"
-configure service "vpls2" spoke-sdp 3:3000
+configure service vpls "vpls2" admin-state enable
+configure service vpls "vpls2" service-id 3000 customer "1"
+configure service vpls "vpls2" spoke-sdp 3:3000
 exit
-configure service "vpls2" sap 1/1/2:70
+configure service vpls "vpls2" sap 1/1/2:70
 exit

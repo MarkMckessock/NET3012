@@ -56,15 +56,7 @@ configure router interface "toR6-4" port 1/1/2:40
 
 ########################## LAB 6 ##########################
 
-configure filter log 101 destination memory max-entries 500
-configure filter ip-filter "sniffer" default-action accept filter-id 1
-configure filter ip-filter "sniffer" entry 10 log 101
-configure filter ip-filter "sniffer" entry 10 match protocol udp
-configure filter ip-filter "sniffer" entry 10 action accept
-
-configure router interface "mirror" ipv4 primary address 192.168.101.1 prefix-length 24
-configure router interface "mirror" port 1/1/2:101
-configure router interface "mirror" ingress filter ip "sniffer"
+# N/A
 
 ########################## LAB 7 ##########################
 
@@ -74,6 +66,8 @@ configure router interface "loopback_1" loopback ipv4 primary address 100.100.2.
 configure router interface "to_IES" admin-state enable
 configure router interface "to_IES" ipv4 primary address 172.16.2.2 prefix-length 24
 configure router interface "to_IES" port 1/1/2:60
+
+configure port 1/1/2 ethernet mtu 1518 # Required to match PE for OSPF to establish peering
 
 # OSPF
 configure router ospf 0 admin-state enable
