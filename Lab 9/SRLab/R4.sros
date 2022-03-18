@@ -161,7 +161,7 @@ exit
 
 configure service ies "IES 600" admin-state enable
 configure service ies "IES 600" service-id 600 customer "1"
-configure service ies "IES 600" interface "IES_600" spoke-sdp 8:44000
+configure service ies "IES 600" interface "IES_600" spoke-sdp 8:4000
 exit
 configure service ies "IES 600" interface "IES_600" ipv4 primary address 172.17.4.1 prefix-length 24
 configure service ies "IES 600" interface "IES_600" ip-mtu 1500
