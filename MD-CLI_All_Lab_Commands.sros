@@ -15,8 +15,8 @@ configure card <slot-number> card-type <interface-name>
 configure sfm <slot-number> sfm-type <sfm-name>
 configure card <slot-number> mda <mda-number> mda-type <mda-name>
 configure port <port-id> admin-state enable
-configure router interface “system” ipv4 primary address <ipv4-address> prefix-length <prefix-num>
-configure router interface “system” ipv6 address <ipv6-address> prefix-length <prefix-num>
+configure router interface "system" ipv4 primary address <ipv4-address> prefix-length <prefix-num>
+configure router interface "system" ipv6 address <ipv6-address> prefix-length <prefix-num>
 configure router interface <interface-name> ipv4 primary address <ipv4-address> prefix-length <prefix-num>
 configure router interface <interface-name> port <port-id>
 configure router interface <interface-name> ipv6
@@ -118,9 +118,10 @@ show router bgp neighbor
 show router bgp neighbor <ipv4-addr> advertised-routes
 show router bgp neighbor <ipv4-addr> received-routes
 show router mpls lsp [detail]
-show router mpls lsp [“lsp-path-name”] path [detail]
+show router mpls lsp ["lsp-path-name"] path [detail]
 show router mpls bypass-tunnel protected-lsp detail
 show router rsvp session bypass-tunnel [detail]
 show router rsvp session [detail]
 show router mpls lsp {originate | transit | terminate}
-show router mpls lsp {originate | transit | terminate} lsp-name <“lsp-name”> detail
+show router mpls lsp {originate | transit | terminate} lsp-name <"lsp-name"> detail
+//oam lsp-trace <lsp-name>
