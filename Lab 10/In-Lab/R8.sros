@@ -207,13 +207,10 @@ configure service customer "110" description "VPRN Service for Customer Blue" ph
 
 configure service vprn "VPRN 1"
   service-id 110 customer "110" autonomous-system 64496 router-id 10.10.10.8
-  bgp-ipvpn mpls
-    admin-state enable
-    route-distinguisher "64496:110"
-    vrf-target community "target:64496:110"
-    auto-bind-tunnel resolution filter
-    auto-bind-tunnel resolution-filter ldp true
-  exit
+  route-distinguisher "64496:110"
+  vrf-target community "target:64496:110"
+  auto-bind-tunnel resolution filter
+  auto-bind-tunnel resolution-filter ldp true
   interface "VPRN" 
     description "Customer_Blue_Site_2"
     ipv4 primary address 10.8.12.8 prefix-length 24
