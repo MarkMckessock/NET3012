@@ -203,17 +203,21 @@ configure router bgp neighbor 10.10.10.5 group "MP-iBGP"
 configure router bgp neighbor 10.10.10.6 group "MP-iBGP"
 configure router bgp neighbor 10.10.10.7 group "MP-iBGP"
 
-configure service customer "120" description "VPRN Service for Customer Red" phone "1-888-555-1212"
+configure service customer "110" description "VPRN Service for Customer Blue" phone "1-888-555-1212"
 
 configure service vprn "VPRN 1"
-  service-id 120 customer "120" autonomous-system 64496 router-id 10.10.10.8 router-distinguisher "64496:120"
-  vrf-target community "target:64496:120"
-  auto-bind-tunnel resolution filter
-  auto-bind-tunnel resolution-filter ldp true
+  service-id 110 customer "110" autonomous-system 64496 router-id 10.10.10.8
+  bgp-ipvpn mpls
+    admin-state enable
+    route-distinguisher "64496:110"
+    vrf-target community "target:64496:110"
+    auto-bind-tunnel resolution filter
+    auto-bind-tunnel resolution-filter ldp true
+  exit
   interface "VPRN" 
-    description "Customer_Red_Site_2"
+    description "Customer_Blue_Site_2"
     ipv4 primary address 10.8.12.8 prefix-length 24
-    sap 1/1/2:120
+    sap 1/1/2:110
     exit
   exit
 exit
@@ -229,10 +233,10 @@ exit
 configure policy-options policy-statement "accept-all" default-action action-type accept
 
 configure service vprn "VPRN 1" bgp
-  group "to_CE4_Red" peer-as 64498
-  group "to_CE4_Red" family ipv4 true
+  group "to_CE4_Blue" peer-as 64498
+  group "to_CE4_Blue" family ipv4 true
   neighbor 10.5.9.9
-    group "to_CE4_Red"
+    group "to_CE4_Blue"
     import policy "accept-all"
     export policy "MPBGP-BGP"
   exit
@@ -245,10 +249,10 @@ configure service vprn "VPRN 1" admin-state enable
 configure router interface "system" ipv6 address 2001:db8::8 prefix-length 128
 
 configure service vprn "VPRN 1"
-  interface "VPRN" ipv6 address 2001:db8:44::8 prefix-length 48
-  bgp group "to_CE4_Red" family ipv6 true
+  interface "VPRN" ipv6 address 2001:db8:44::8 prefix-length 64
+  bgp group "to_CE4_Blue" family ipv6 true
   bgp neighbor 2001:db8:44::12
-    group "to_CE4_Red"
+    group "to_CE4_Blue"
     import policy "accept-all"
     export policy "MPBGP-BGP"
   exit

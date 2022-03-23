@@ -91,6 +91,7 @@ configure router interface "Red_Site_1" loopback ipv4 primary address 10.10.2.1 
 
 configure policy-options
   prefix-list "prefixRed" prefix 10.10.2.0/24 type exact
+  exit
   policy-statement "accept-all" default-action action-type accept
   policy-statement "exportRed"
     entry 10

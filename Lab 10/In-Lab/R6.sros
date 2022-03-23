@@ -208,10 +208,14 @@ configure router bgp neighbor 10.10.10.8 group "MP-iBGP"
 configure service customer "120" description "VPRN Service for Customer Red" phone "1-888-555-1212"
 
 configure service vprn "VPRN 1"
-  service-id 120 customer "120" autonomous-system 64496 router-id 10.10.10.6 router-distinguisher "64496:120"
-  vrf-target community "target:64496:120"
-  auto-bind-tunnel resolution filter
-  auto-bind-tunnel resolution-filter ldp true
+  service-id 120 customer "120" autonomous-system 64496 router-id 10.10.10.6
+  bgp-ipvpn mpls
+    admin-state enable
+    route-distinguisher "64496:120"
+    vrf-target community "target:64496:120"
+    auto-bind-tunnel resolution filter
+    auto-bind-tunnel resolution-filter ldp true
+  exit
   interface "VPRN" 
     description "Customer_Red_Site_1"
     ipv4 primary address 10.6.10.6 prefix-length 24
@@ -247,7 +251,7 @@ configure service vprn "VPRN 1" admin-state enable
 configure router interface "system" ipv6 address 2001:db8::6 prefix-length 128
 
 configure service vprn "VPRN 1"
-  interface "VPRN" ipv6 address 2001:db8:22::6 prefix-length 48
+  interface "VPRN" ipv6 address 2001:db8:22::6 prefix-length 64
   bgp group "to_CE2_Red" family ipv6 true
   bgp neighbor 2001:db8:22::10
     group "to_CE2_Red"

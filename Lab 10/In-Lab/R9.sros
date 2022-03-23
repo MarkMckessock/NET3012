@@ -90,6 +90,7 @@ configure router interface "Blue_Site_1" loopback ipv4 primary address 10.10.1.1
 
 configure policy-options
   prefix-list "prefixBlue" prefix 10.10.1.0/24 type exact
+  exit
   policy-statement "accept-all" default-action action-type accept
   policy-statement "exportBlue"
     entry 10
