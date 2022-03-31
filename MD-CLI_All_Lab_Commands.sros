@@ -103,32 +103,67 @@ configure router bgp group <bgp-group-name> export policy <action>
 
 
 ##### Troubleshooting & Show commands #####
-show system info
 admin show configuration full-context
+show system info
+show chassis
+show port
+show router status
 show router interface
-show router route-table
-show router route-table ipv6
+show router arp
+show router [service-id-number] route-table
+show router [service-id-number] route-table ipv6
 show router tunnel-table
-show router bgp routes evpn ip-prefix
-show service id <service-id-number> base
-show router bgp summary [all]
-show router bgp routes hunt
-show router bgp router vpn-ipv4 hunt
-show router bgp routes label-ipv4 hunt
-show router bgp neighbor
-show router bgp neighbor <ipv4-addr> advertised-routes
-show router bgp neighbor <ipv4-addr> received-routes
+show router policy [admin]
+show router <service-id-number> fib <slow-number> {ipv4 | ipv6}
+
+show router <router-instance> ospf neighbor
+show router <router-instance> ospf database
+
+show router ldp bindings [active]
+show router ldp bindings [service]
 show router mpls lsp [detail]
 show router mpls lsp ["lsp-path-name"] path [detail]
+show router mpls lsp {originate | transit | terminate}
+show router mpls lsp {originate | transit | terminate} lsp-name <"lsp-name"> detail
 show router mpls bypass-tunnel protected-lsp detail
 show router rsvp session bypass-tunnel [detail]
 show router rsvp session [detail]
-show router mpls lsp {originate | transit | terminate}
-show router mpls lsp {originate | transit | terminate} lsp-name <"lsp-name"> detail
+
+show router bgp summary [all]
+show router bgp routes
+show router bgp routes hunt
+show router bgp router vpn-ipv4 [hunt]
+show router bgp router vpn-ipv6 [hunt]
+show router bgp routes label-ipv4 [hunt]
+show router bgp routes evpn ip-prefix
+show router bgp neighbor
+show router bgp neighbor <ipv4-address> advertised-routes
+show router bgp neighbor <ipv4-address> received-routes
+
+show service id <service-id-number> all
+show service id <service-id-number> base
+show service id <service-id-number> labels
+show router <service-id-number> status
+show router <router-instance> route-table
+
+ping <ipv4-address> size <packet-size>
+ping <ipv4-address> router <service-id-number>
+traceroute <ipv4-address> router <service-id-number>
+
+
+
+##### OAM Tools #####
 //oam lsp-trace <lsp-name>
 //oam lsp-ping <lsp-name>
 //oam lsp-trace bgp-label prefix <remote-prefix> src-ip-address <local-address>
 //oam lsp-ping bgp-label prefix <remote-prefix> src-ip-address <local-address>
-//oam vprn-ping <service-id-number> source 10.5.9.5 destination 10.8.12.8
-//oam vprn-trace <service-id-number> source 10.5.9.5 destination 10.8.12.8
+//oam vprn-ping <service-id-number> source <ipv4-address> destination <ipv4-address>
+//oam vprn-trace <service-id-number> source <ipv4-address> destination <ipv4-address>
 //oam ldp-treetrace prefix <ipv4-address>/<prefix>
+//oam sdp-ping <sdp-id-number>
+//oam sdp-ping <sdp-id-number> resp-sdp 5
+//oam sdp-mtu <sdp-id-number> size-inc <start> <end> step <step-size>
+//oam svc-ping <ipv4-address> service <service-id-number> local-sdp remote-sdp
+
+
+
