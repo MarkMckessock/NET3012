@@ -104,12 +104,13 @@ configure router bgp group <bgp-group-name> export policy <action>
 
 ##### Troubleshooting & Show commands #####
 show system info
+admin show configuration full-context
 show router interface
 show router route-table
 show router route-table ipv6
 show router tunnel-table
 show router bgp routes evpn ip-prefix
-show service id 50 base
+show service id <service-id-number> base
 show router bgp summary [all]
 show router bgp routes hunt
 show router bgp router vpn-ipv4 hunt
@@ -125,3 +126,9 @@ show router rsvp session [detail]
 show router mpls lsp {originate | transit | terminate}
 show router mpls lsp {originate | transit | terminate} lsp-name <"lsp-name"> detail
 //oam lsp-trace <lsp-name>
+//oam lsp-ping <lsp-name>
+//oam lsp-trace bgp-label prefix <remote-prefix> src-ip-address <local-address>
+//oam lsp-ping bgp-label prefix <remote-prefix> src-ip-address <local-address>
+//oam vprn-ping <service-id-number> source 10.5.9.5 destination 10.8.12.8
+//oam vprn-trace <service-id-number> source 10.5.9.5 destination 10.8.12.8
+//oam ldp-treetrace prefix <ipv4-address>/<prefix>
