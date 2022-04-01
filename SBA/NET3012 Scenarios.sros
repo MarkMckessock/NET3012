@@ -1,0 +1,158 @@
+# ========================================= ePipe Spoke SDP Termination =================================
+
+# Configure SDPs to VPLS and ePipe endpoints
+configure service sdp <sdp-id> admin-state enable
+configure service sdp <sdp-id> delivery-type mpls ldp true 
+configure service sdp <sdp-id> far-end ip-address <endpoint>
+
+# On VPLS endpoints, configure the VPLS. Create as many mesh-sdp as there are VPLS endpoints and a spoke-sdp for the epipe endpoint
+configure service vpls "vpls1" admin-state enable
+configure service vpls "vpls1" service-id 200 customer "200"
+configure service vpls "vpls1" mesh-sdp <sdp-id>:<vc-id> # repeat as required
+exit
+configure service vpls "vpls1" spoke-sdp <sdp-id>:<vc-id>
+exit
+configure service vpls "vpls1" sap <interface>:[<vlan tag>]
+exit
+
+# On the ePipe endpoint, configure the ePipe ensuring that the VC-ID matches that configured on the VPLS
+configure service epipe "epipe1" admin-state enable
+configure service epipe "epipe1" service-id 10 customer "1"
+configure service epipe "epipe1" spoke-sdp <sdp-id>:<vc-id>
+exit
+configure service epipe "epipe1" sap <interface>:[<vlan tag>]
+exit
+
+# ========================================= VPLS Spoke termination on IES =================================
+
+# Configure SDPs to VPLS and IES endpoints
+configure service sdp <sdp-id> admin-state enable
+configure service sdp <sdp-id> delivery-type mpls ldp true 
+configure service sdp <sdp-id> far-end ip-address <endpoint>
+
+# Configure the VPLS service on the customer-facing edge router with a single spoke-SDP which will terminate on the IES
+configure service vpls "vpls1" admin-state enable
+configure service vpls "vpls1" service-id 200 customer "200"
+configure service vpls "vpls1" spoke-sdp <sdp-id>:<vc-id>
+exit
+configure service vpls "vpls1" sap <interface>:[<vlan tag>]
+exit
+
+# Configure the IES on the network core router with the spoke-sdp corresponding to the VPLS just created
+configure service ies "IES 600" admin-state enable
+configure service ies "IES 600" service-id 600 customer "1"
+configure service ies "IES 600" interface "IES_600" spoke-sdp <sdp-id>:<vc-id>
+exit
+configure service ies "IES 600" interface "IES_600" ipv4 primary address <interface-address> prefix-length 24
+configure service ies "IES 600" interface "IES_600" ip-mtu 1500 # IMPORTANT
+
+
+# ========================================= Label BGP Extension =================================
+# Prerequisites: MPLS (LDP) + OSPF + IPv4 Addressing
+
+configure router autonomous-system 64496 # configure local asn
+
+# Create iBGP group
+configure router bgp group "iBGP" peer-as 64496 family label-ipv4 true
+
+# Add iBGP neighbors
+configure router bgp neighbor <neighbor-ip> group "iBGP" 
+
+# Create an eBGP group
+configure router bgp group "eBGP" peer-as 64497 family label-ipv4 true
+
+# Add eBGP neighbors
+configure router bgp neighbor <neighbor-ip> group "eBGP" 
+
+# Configure a loopback interface (or use whatever network is desired)
+configure router interface "loopback_1" admin-state enable
+configure router interface "loopback_1" loopback ipv4 primary address 100.100.100.1 prefix-length 32
+
+# Configure a prefix-list and route policy to export the subnet to label-bgp (to either iBGP or eBGP depending on the source)
+configure policy-options prefix-list "Loopback1" prefix 100.100.100.1/32 type exact
+exit
+configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 from prefix-list "Loopback1"
+configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 to protocol name bgp-label
+configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 action action-type accept
+
+# Apply the export policy to advertise the prefix into iBGP
+configure router bgp group "iBGP" export policy "Loop-to-LabelIPv4"
+
+# Configure a route policy to export all label-ipv4 advertisements (required if using iBGP or to receive advertisements from a remote AS)
+configure policy-options policy-statement "accept-all-label-ipv4" entry 10 from protocol name bgp-label
+configure policy-options policy-statement "accept-all-label-ipv4" entry 10 to protocol name bgp-label
+configure policy-options policy-statement "accept-all-label-ipv4" entry 10 action action-type accept
+
+# Apply the export policy to advertise the label-prefix to eBGP neighbors
+configure router bgp group "eBGP" export policy "accept-all-label-ipv4"
+
+# ========================================= BGP VPN Extension =================================
+# Prerequisites: MPLS (LDP) + OSPF + IPv4 Addressing
+
+# Create a BGP group for eBGP VPN neighbors
+configure router bgp group "eBGP-VPN-IPv4" multihop 10
+configure router bgp group "eBGP-VPN-IPv4" peer-as <remote-as>
+configure router bgp group "eBGP-VPN-IPv4" local-address <local address>
+configure router bgp group "eBGP-VPN-IPv4" family vpn-ipv4 true
+configure router bgp group "eBGP-VPN-IPv4" ebgp-default-reject-policy import false export false
+
+# Add neighbors
+configure router bgp neighbor <neighbor-ip> group "eBGP-VPN-IPv4" 
+
+# Create the VPRN on each router participating
+configure service vprn "VPRN 1" admin-state enable
+configure service vprn "VPRN 1" service-id 110 customer "110" 
+configure service vprn "VPRN 1" autonomous-system <local-as> router-id 10.10.10.5 
+configure service vprn "VPRN 1" route-distinguisher "64496:110"
+configure service vprn "VPRN 1" vrf-target community "target:64496:110"
+configure service vprn "VPRN 1" auto-bind-tunnel resolution filter
+configure service vprn "VPRN 1" auto-bind-tunnel resolution-filter ldp true
+
+# ========================================= 6vPE =================================
+# Prerequisites: MPLS (LDP) + OSPF + IPv4/IPv6 Addressing
+
+configure router autonomous-system 64496 # configure local asn
+
+# Create iBGP group for vpn-ipv4 and vpn-ipv6
+configure router bgp group "MP-iBGP" peer-as 64496 family vpn-ipv4 true 
+configure router bgp group "MP-iBGP" peer-as 64496 family vpn-ipv6 true
+
+# Add iBGP neighbors
+configure router bgp neighbor <neighbor-ip> group "MP-iBGP" 
+
+# Create VPRN
+configure service vprn "VPRN 1" admin-state enable
+configure service vprn "VPRN 1" service-id 110 customer "110" 
+configure service vprn "VPRN 1" autonomous-system 64496 router-id 10.10.10.5 
+configure service vprn "VPRN 1" route-distinguisher "64496:110"
+configure service vprn "VPRN 1" vrf-target community "target:64496:110"
+configure service vprn "VPRN 1" auto-bind-tunnel resolution filter
+configure service vprn "VPRN 1" auto-bind-tunnel resolution-filter ldp true
+
+# Create VPRN interface
+configure service vprn "VPRN 1" interface "VPRN" ipv4 primary address 10.5.9.5 prefix-length 24
+configure service vprn "VPRN 1" interface "VPRN" ipv6 address 2001:db8:11::5 prefix-length 64
+configure service vprn "VPRN 1" interface "VPRN" sap 1/1/2:110
+exit
+
+# Policy configuration
+configure policy-options policy-statement "accept-all" default-action action-type accept
+
+configure policy-options policy-statement "MPBGP-BGP" entry 10 from protocol name bgp-vpn
+configure policy-options policy-statement "MPBGP-BGP" entry 10 to protocol name bgp
+configure policy-options policy-statement "MPBGP-BGP" entry 10 action action-type accept
+
+# Configure the BGP group within the VPRN
+configure service vprn "VPRN 1" bgp group "to_CE1_Blue" peer-as <remote-asn>
+configure service vprn "VPRN 1" bgp group "to_CE1_Blue" family ipv4 true
+configure service vprn "VPRN 1" bgp group "to_CE1_Blue" family ipv6 true
+
+# Add IPv4 BGP neighbors
+configure service vprn "VPRN 1" bgp neighbor 10.5.9.9 group "to_CE1_Blue"
+configure service vprn "VPRN 1" bgp neighbor 10.5.9.9 import policy "accept-all"
+configure service vprn "VPRN 1" bgp neighbor 10.5.9.9 export policy "MPBGP-BGP"
+
+# Add IPv6 BGP neighbors
+configure service vprn "VPRN 1" bgp neighbor 2001:db8:11::9 group "to_CE1_Blue"
+configure service vprn "VPRN 1" bgp neighbor 2001:db8:11::9 import policy "accept-all"
+configure service vprn "VPRN 1" bgp neighbor 2001:db8:11::9 export policy "MPBGP-BGP"
