@@ -15,11 +15,21 @@ configure card <slot-number> card-type <interface-name>
 configure sfm <slot-number> sfm-type <sfm-name>
 configure card <slot-number> mda <mda-number> mda-type <mda-name>
 configure port <port-id> admin-state enable
+configure port <port-id> ethernet encap-type dot1q
+configure port <port-id> ethernet mode [access | network]
 configure router interface "system" ipv4 primary address <ipv4-address> prefix-length <prefix-num>
 configure router interface "system" ipv6 address <ipv6-address> prefix-length <prefix-num>
 configure router interface <interface-name> ipv4 primary address <ipv4-address> prefix-length <prefix-num>
 configure router interface <interface-name> port <port-id>
 configure router interface <interface-name> ipv6
+
+
+
+##### MTU Configuration #####
+configure port <port-id> ethernet mtu <mtu-size>					<-- L2 or SAP MTU
+configure router interface <interface-name> ip-mtu <mtu-size>		<-- IP MTU
+configure service sdp <sdp-id> path-mtu <mtu-size>					<-- SDP Path MTU
+configure service {epipe | vpls} <service-id> service-mtu <mtu-size>  <-- Service MTU
 
 
 
@@ -32,7 +42,7 @@ Configure router ospf admin-state enable
 
 ##### LDP Configuration #####
 configure router ldp interface-parameters interface <interface-name> ipv4 admin-state enable
-configure router admin-state enable
+configure router ldp admin-state enable
 
 
 
@@ -102,6 +112,34 @@ configure router bgp group <bgp-group-name> export policy <action>
 
 
 
+##### VPLS #####
+configure service customer <customer-id>		<---- Not exclusive to VPLS
+configure service vpls mesh-sdp <sdp-id>:<vc-id>
+configure service vpls spoke-sdp <sdp-id>:<vc-id>
+configure service vpls "service-name" admin-state enable
+configure service vpls "service-name" customer <customer-id>
+configure service vpls "service-name" service-id <service-id>
+configure service vpls "service-name" description "write your description here"
+configure service vpls "service-name" sap <sap-id>
+
+
+
+##### Service Distribution Paths (SDPs) #####
+configure service sdp <sdp-id> admin-state enable
+configure service sdp <sdp-id> delivery-type mpls ldp true
+configure service sdp <sdp-id> far-end <ipv4-address>
+configure service sdp <sdp-id> lsp <lsp-name>
+configure service sdp signaling tldp
+
+
+
+
+##### ePipe #####
+configure service epipe "service-name" spoke-sdp <sdp-id>:<vc-id>
+configure service epipe "service-name" sap <sap-id>
+
+
+
 ##### Troubleshooting & Show commands #####
 admin show configuration full-context
 show system info
@@ -143,6 +181,7 @@ show router bgp neighbor <ipv4-address> received-routes
 show service id <service-id-number> all
 show service id <service-id-number> base
 show service id <service-id-number> labels
+show service id <service-id-number> fdb detail
 show service sap-using
 show router <service-id-number> status
 show router <router-instance> route-table
