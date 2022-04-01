@@ -65,6 +65,9 @@ configure router autonomous-system <asn>
 configure router bgp group <group-name> peer-as <remote-asn>
 configure router bgp group <group-name> family ipv4 true # ipv4
 configure router bgp group <group-name> family ipv6 true # ipv6
+configure router bgp group <group-name> family vpn-ipv4 true # vpn-ipv4
+configure router bgp group <group-name> family vpn-ipv6 true # vpn-ipv6
+configure router bgp group <group-name> family label-ipv4 true # label-ipv4
 configure router bgp group <group-name> next-hop-self true # next-hop self (iBGP)
 
 
@@ -77,35 +80,11 @@ configure router bgp neighbor <neighbor-ip> group <group-name>
 configure router bgp neighbor <neighbor-ip> group <group-name>
 
 # Route Policies
+configure policy-options policy-statement "<policy-name>" entry 10 from protocol name <source-proto> 
+configure policy-options policy-statement "<policy-name>" entry 10 to protocol name <destination-proto>
+configure policy-options policy-statement "<policy-name>" entry 10 action action-type <action>
+
 configure policy-options policy-statement "accept-all" default-action action-type accept # accept-all example
-
-configure policy-options policy-statement "ospf-and-direct" entry 10 from protocol name direct 
-configure policy-options policy-statement "ospf-and-direct" entry 10 to protocol name bgp 
-configure policy-options policy-statement "ospf-and-direct" entry 10 action action-type accept
-configure policy-options policy-statement "ospf-and-direct" entry 20 from protocol name ospf 
-configure policy-options policy-statement "ospf-and-direct" entry 20 to protocol name bgp 
-configure policy-options policy-statement "ospf-and-direct" entry 20 action action-type accept
-
-configure policy-options policy-statement "accept-all-label-ipv4" entry 10 from protocol name bgp-label
-configure policy-options policy-statement "accept-all-label-ipv4" entry 10 to protocol name bgp-label
-configure policy-options policy-statement "accept-all-label-ipv4" entry 10 action action-type accept
-
-configure policy-options policy-statement "ospf3-and-direct" entry 10 from protocol name direct 
-configure policy-options policy-statement "ospf3-and-direct" entry 10 to protocol name bgp 
-configure policy-options policy-statement "ospf3-and-direct" entry 10 action action-type accept
-configure policy-options policy-statement "ospf3-and-direct" entry 20 from protocol name ospf3 
-configure policy-options policy-statement "ospf3-and-direct" entry 20 to protocol name bgp 
-configure policy-options policy-statement "ospf3-and-direct" entry 20 action action-type accept
-
-configure policy-options policy-statement "MPBGP-BGP" entry 10 from protocol name bgp-vpn
-configure policy-options policy-statement "MPBGP-BGP" entry 10 to protocol name bgp
-configure policy-options policy-statement "MPBGP-BGP" entry 10 action action-type accept
-
-configure policy-options prefix-list "Loopback1" prefix 100.100.100.1/32 type exact
-exit
-configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 from prefix-list "Loopback1"
-configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 to protocol name bgp-label
-configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 action action-type accept
 
 # Applying Route Policies
 configure router bgp group <group-name> import policy <policy-name>

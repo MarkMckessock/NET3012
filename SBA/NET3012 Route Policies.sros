@@ -1,0 +1,35 @@
+# Accept All
+configure policy-options policy-statement "accept-all" default-action action-type accept
+
+# Advertise directly connected and OSPF routes into BGP
+configure policy-options policy-statement "ospf-and-direct" entry 10 from protocol name direct 
+configure policy-options policy-statement "ospf-and-direct" entry 10 to protocol name bgp 
+configure policy-options policy-statement "ospf-and-direct" entry 10 action action-type accept
+configure policy-options policy-statement "ospf-and-direct" entry 20 from protocol name ospf 
+configure policy-options policy-statement "ospf-and-direct" entry 20 to protocol name bgp 
+configure policy-options policy-statement "ospf-and-direct" entry 20 action action-type accept
+
+# Advertise directly connected and OSPFv3 routes into BGP
+configure policy-options policy-statement "ospf3-and-direct" entry 10 from protocol name direct 
+configure policy-options policy-statement "ospf3-and-direct" entry 10 to protocol name bgp 
+configure policy-options policy-statement "ospf3-and-direct" entry 10 action action-type accept
+configure policy-options policy-statement "ospf3-and-direct" entry 20 from protocol name ospf3 
+configure policy-options policy-statement "ospf3-and-direct" entry 20 to protocol name bgp 
+configure policy-options policy-statement "ospf3-and-direct" entry 20 action action-type accept
+
+# Accept label-bgp routes
+configure policy-options policy-statement "accept-all-label-ipv4" entry 10 from protocol name bgp-label
+configure policy-options policy-statement "accept-all-label-ipv4" entry 10 to protocol name bgp-label
+configure policy-options policy-statement "accept-all-label-ipv4" entry 10 action action-type accept
+
+# Adverstise MP-BGP (vpn) routes into the BGP instance
+configure policy-options policy-statement "MPBGP-BGP" entry 10 from protocol name bgp-vpn
+configure policy-options policy-statement "MPBGP-BGP" entry 10 to protocol name bgp
+configure policy-options policy-statement "MPBGP-BGP" entry 10 action action-type accept
+
+# Advertise a specific prefix into label-bgp
+configure policy-options prefix-list "Loopback1" prefix 100.100.100.1/32 type exact
+exit
+configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 from prefix-list "Loopback1"
+configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 to protocol name bgp-label
+configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 action action-type accept
