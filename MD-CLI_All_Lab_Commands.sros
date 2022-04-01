@@ -56,6 +56,7 @@ configure router rsvp admin-state enable
 configure router mpls admin-state enable
 configure router mpls interface <interface-name> admin-state enable
 configure router mpls lsp <lsp-path-name> admin-state enable
+configure router mpls lsp <lsp-path-name> adspec true
 
 
 
@@ -133,11 +134,55 @@ configure service sdp signaling tldp
 
 
 
+##### IES #####
+configure service ies "IES-name" interface "IES-int-name" ip-mtu <mtu-size>    <--- the MTU size must be exactly 14 bytes less than the service on the other side (confirmation needed)
+
+
 
 ##### ePipe #####
 configure service epipe "service-name" spoke-sdp <sdp-id>:<vc-id>
 configure service epipe "service-name" sap <sap-id>
 
+
+
+##### VPRN #####
+configure service vprn "VPRN-name"
+  service-id <service-id-number> customer <customer-id> autonomous-system <AS-number> router-id <router-id>
+  bgp-ipvpn mpls
+    admin-state enable
+	route-distinguisher "<AS-number>:<service-id-number>"
+	vrf-target community "target:<route-distinguisher>"
+	auto-bind-tunnel resolution filter
+	auto-bind-tunnel resolution-filter ldp true
+  interface "interface-name"
+    description "write your description here"
+	ipv4 primary address <ipv4-address> prefix-length <prefix-length>
+	sap <sap-id>
+	exit
+  exit
+exit
+
+configure policy-options policy-statement "Policy-name"
+  entry <number>
+    from protocol name <protocol-name>
+    to protocol name <protocol-name>
+    action action-type <action>
+  exit
+exit
+
+configure policy-options policy-statement "Policy-name" default-action action-type <action>
+
+configure service vprn "VPRN-name" bgp
+  group "group-name" peer-as <AS-number>
+  group "group-name" family ipv4 true
+  neighbor <neighbor-AS-number>
+    group "group-name"
+    import policy "Policy-name"
+    export policy "Policy-name"
+  exit
+exit
+
+configure service vprn "VPRN-name" admin-state enable
 
 
 ##### Troubleshooting & Show commands #####
@@ -180,8 +225,10 @@ show router bgp neighbor <ipv4-address> received-routes
 
 show service id <service-id-number> all
 show service id <service-id-number> base
+show service id <service-id-number> all | match flag ignore-case    <--- Extra TS-ing
 show service id <service-id-number> labels
 show service id <service-id-number> fdb detail
+show service service-using
 show service sap-using
 show router <service-id-number> status
 show router <router-instance> route-table
