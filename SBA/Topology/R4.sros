@@ -1,0 +1,14 @@
+edit-config global
+environment prompt timestamp
+environment more false
+configure system name 
+
+# Card bring-up
+configure card 1 card-type iom-v
+configure card 1 mda 1 mda-type m20-v
+commit
+
+
+configure port 1/1/1 admin-state enable
+configure port 1/1/2 admin-state enable
+commit
