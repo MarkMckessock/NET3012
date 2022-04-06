@@ -141,7 +141,7 @@ configure service ies "IES-name" interface "IES-int-name" ip-mtu <mtu-size>    <
 
 ##### ePipe #####
 configure service epipe "service-name" spoke-sdp <sdp-id>:<vc-id>
-configure service epipe "service-name" sap <sap-id>
+configure service epipe "service-name" sap <port-id>:<vlan-id>
 
 
 
@@ -189,6 +189,7 @@ configure service vprn "VPRN-name" admin-state enable
 admin show configuration full-context
 show system info
 show chassis
+show log log-id 99
 show port
 show router status
 show router interface
@@ -202,8 +203,8 @@ show router <service-id-number> fib <slow-number> {ipv4 | ipv6}
 show router <router-instance> ospf neighbor
 show router <router-instance> ospf database
 
-show router ldp bindings [active]
-show router ldp bindings [service]
+show router ldp bindings active
+show router ldp bindings services
 show router mpls lsp [detail]
 show router mpls lsp ["lsp-path-name"] path [detail]
 show router mpls lsp {originate | transit | terminate}
@@ -230,6 +231,7 @@ show service id <service-id-number> labels
 show service id <service-id-number> fdb detail
 show service service-using
 show service sap-using
+show service sdp
 show router <service-id-number> status
 show router <router-instance> route-table
 
