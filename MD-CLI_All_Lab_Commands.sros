@@ -142,6 +142,7 @@ configure service ies "IES-name" interface "IES-int-name" ip-mtu <mtu-size>    <
 ##### ePipe #####
 configure service epipe "service-name" spoke-sdp <sdp-id>:<vc-id>
 configure service epipe "service-name" sap <port-id>:<vlan-id>
+configure service epipe "service-name" spoke-sdp <sdp-id>:<vc-id> vc-type {Ether | VLAN} vlan-vc-tag <vc-tag>
 
 
 
