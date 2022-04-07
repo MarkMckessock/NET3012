@@ -79,6 +79,9 @@ configure router bgp neighbor <neighbor-ip> group <group-name>
 
 configure router bgp neighbor <neighbor-ip> group <group-name>
 
+# Route Reflection
+configure router bgp neighbor <neighbor-ip> group <group-name> cluster-id <cluster-id>
+
 # Route Policies
 configure policy-options policy-statement "<policy-name>" entry 10 from protocol name <source-proto> 
 configure policy-options policy-statement "<policy-name>" entry 10 to protocol name <destination-proto>
@@ -97,11 +100,18 @@ configure service sdp 8 admin-state enable
 configure service sdp 8 delivery-type mpls ldp true 
 configure service sdp 8 far-end ip-address <endpoint>
 
+# SDP using custom LSP
+
+configure service sdp 8 admin-state enable 
+configure service sdp 8 delivery-type mpls ldp false
+configure service sdp 8 lsp "<lsp-name>" 
+exit
+
 # IES
 
 configure service ies "IES 600" admin-state enable
 configure service ies "IES 600" service-id 600 customer "1"
-configure service ies "IES 600" interface "IES_600" spoke-sdp <sdp-id>:<vc-id>
+configure service ies "IES 600" interface "IES_600" sap <interface>[:<vlan-tag>]
 exit
 configure service ies "IES 600" interface "IES_600" ipv4 primary address <interface-address> prefix-length 24
 configure service ies "IES 600" interface "IES_600" ip-mtu 1500
