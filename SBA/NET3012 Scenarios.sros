@@ -122,18 +122,22 @@ configure router bgp group "iBGP" peer-as 65001 family evpn true
 # Add iBGP neighbors
 configure router bgp neighbor <neighbor-ip> group "iBGP" 
 
-# Configure Routed VPLS
+# Configure Access VPLS 
 configure service vpls "vpls1" admin-state enable
 configure service vpls "vpls1" service-id 100 customer "100"
+configure service vpls "vpls1" vxlan instance 1 vni 101 # must be different for different subnets
 configure service vpls "vpls1" routed-vpls
 exit
+configure service vpls "vpls1" bgp 1 route-distinguisher "65001:100" # must be different for different subnets
+configure service vpls "vpls1" bgp 1 route-target export "target:65001:100" import "target:65001:100" # must be different for different subnets
+configure service vpls "vpls1" bgp-evpn vxlan 1 admin-state enable vxlan-instance 1
 configure service vpls "vpls1" sap <interface>:[<vlan tag>]
 exit
 
 # Configure Backhaul VPLS
 configure service vpls "vpls2" admin-state enable
 configure service vpls "vpls2" service-id 150 customer "100"
-configure service vpls "vpls2" vxlan instance 1 vni 150 # vni must be different for different subnets
+configure service vpls "vpls2" vxlan instance 1 vni 150 # backhaul vni is same for all subnets
 configure service vpls "vpls2" routed-vpls
 exit
 
@@ -207,24 +211,14 @@ configure service ies "IES 600" interface "IES_600" ipv4 primary address <interf
 configure service ies "IES 600" interface "IES_600" ip-mtu 1500 # IMPORTANT
 
 
-# ========================================= Label BGP Extension =================================
+# ========================================= Label BGP VPRN Extension =================================
 # Prerequisites: MPLS (LDP) + OSPF + IPv4 Addressing
 
-configure router autonomous-system 64496 # configure local asn
+# ------ CE Router
+# Configure an interface and BGP peering with the PE VPRN interface
 
-# Create iBGP group
-configure router bgp group "iBGP" peer-as 64496 family label-ipv4 true
-
-# Add iBGP neighbors
-configure router bgp neighbor <neighbor-ip> group "iBGP" 
-
-# Create an eBGP group
-configure router bgp group "eBGP" peer-as 64497 family label-ipv4 true
-
-# Add eBGP neighbors
-configure router bgp neighbor <neighbor-ip> group "eBGP"
-
-# Configure a loopback interface (or use whatever network is desired)
+# ------ PE Router
+# Configure a loopback interface to be used as the tunnel endpoint
 configure router interface "loopback_1" admin-state enable
 configure router interface "loopback_1" loopback ipv4 primary address 100.100.100.1 prefix-length 32
 
@@ -235,38 +229,64 @@ configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 from pref
 configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 to protocol name bgp-label
 configure policy-options policy-statement "Loop-to-LabelIPv4" entry 10 action action-type accept
 
-# Apply the export policy to advertise the prefix into iBGP
-configure router bgp group "iBGP" export policy "Loop-to-LabelIPv4"
+# VPRN Policy configuration
+configure policy-options policy-statement "accept-all" default-action action-type accept
 
-# Configure a route policy to export all label-ipv4 advertisements (required if using iBGP or to receive advertisements from a remote AS)
-configure policy-options policy-statement "accept-all-label-ipv4" entry 10 from protocol name bgp-label
-configure policy-options policy-statement "accept-all-label-ipv4" entry 10 to protocol name bgp-label
-configure policy-options policy-statement "accept-all-label-ipv4" entry 10 action action-type accept
+configure policy-options policy-statement "MPBGP-BGP" entry 10 from protocol name bgp-vpn
+configure policy-options policy-statement "MPBGP-BGP" entry 10 to protocol name bgp
+configure policy-options policy-statement "MPBGP-BGP" entry 10 action action-type accept
 
-# Apply the export policy to advertise the label-prefix to eBGP neighbors
-configure router bgp group "eBGP" export policy "accept-all-label-ipv4"
+configure router autonomous-system 64496 # configure local asn
 
-# ========================================= BGP VPN Extension =================================
-# Prerequisites: MPLS (LDP) + OSPF + IPv4 Addressing
+# Create iBGP group
+configure router bgp group "iBGP" peer-as 64496 family label-ipv4 true export policy "Loop-to-LabelIPv4"
 
-# Create a BGP group for eBGP VPN neighbors
-configure router bgp group "eBGP-VPN-IPv4" multihop 10
-configure router bgp group "eBGP-VPN-IPv4" peer-as <remote-as>
-configure router bgp group "eBGP-VPN-IPv4" local-address <local address>
-configure router bgp group "eBGP-VPN-IPv4" family vpn-ipv4 true
-configure router bgp group "eBGP-VPN-IPv4" ebgp-default-reject-policy import false export false
-
-# Add neighbors
-configure router bgp neighbor <neighbor-ip> group "eBGP-VPN-IPv4" 
+# Add iBGP neighbors (must include routers facing other provider)
+configure router bgp neighbor <neighbor-ip> group "iBGP" 
 
 # Create the VPRN on each router participating
 configure service vprn "VPRN 1" admin-state enable
 configure service vprn "VPRN 1" service-id 110 customer "110" 
-configure service vprn "VPRN 1" autonomous-system <local-as> router-id 10.10.10.5 
-configure service vprn "VPRN 1" route-distinguisher "64496:110"
-configure service vprn "VPRN 1" vrf-target community "target:64496:110"
+configure service vprn "VPRN 1" autonomous-system 64496 router-id 10.10.10.5 
+configure service vprn "VPRN 1" route-distinguisher "64496:110" # Do not change this on remote VPRN
+configure service vprn "VPRN 1" vrf-target community "target:64496:110" # Do not change this on remote VPRN
 configure service vprn "VPRN 1" auto-bind-tunnel resolution filter
 configure service vprn "VPRN 1" auto-bind-tunnel resolution-filter ldp true
+configure service vprn "VPRN 1" interface "toCE" ipv4 primary address 192.168.0.1 prefix-length 24
+configure service vprn "VPRN 1" interface "toCE" sap 1/1/2:110
+configure service vprn "VPRN 1" bgp group "CE" peer-as <customer-asn> import policy "accept-all" export policy "MPBGP-BGP"
+configure service vprn "VPRN 1" bgp neighbor <customer-ip> group "CE"
+
+# Create a BGP group for eBGP VPN neighbors
+configure router bgp group "eBGP-VPN-IPv4" multihop 10
+configure router bgp group "eBGP-VPN-IPv4" peer-as 64496 # eBGP ASN
+configure router bgp group "eBGP-VPN-IPv4" local-address 100.100.100.1 # configured loopback address
+configure router bgp group "eBGP-VPN-IPv4" family vpn-ipv4 true
+configure router bgp group "eBGP-VPN-IPv4" ebgp-default-reject-policy import false export false
+
+# Add neighbors
+configure router bgp neighbor 100.100.100.2 group "eBGP-VPN-IPv4" 
+
+# ------- P Router (facing other provider)
+
+# Create iBGP group
+configure router bgp group "iBGP" peer-as 64496 family label-ipv4 true vpn-ipv4 true
+
+# Add iBGP neighbors
+configure router bgp neighbor <neighbor-ip> group "iBGP" 
+
+# Configure a route policy to export all label-ipv4 advertisements
+configure policy-options policy-statement "accept-all-label-ipv4" entry 10 from protocol name bgp-label
+configure policy-options policy-statement "accept-all-label-ipv4" entry 10 to protocol name bgp-label
+configure policy-options policy-statement "accept-all-label-ipv4" entry 10 action action-type accept
+
+# Create an eBGP group
+configure router bgp group "eBGP" peer-as 64497 family label-ipv4 true export policy "accept-all-label-ipv4"
+
+# Add eBGP neighbors
+configure router bgp neighbor <neighbor-ip> group "eBGP"
+
+# REPEAT MIRRORED ON REMOTE PROVIDER (with different AS and tunnel endpoint)
 
 # ========================================= 6vPE =================================
 # Prerequisites: MPLS (LDP) + OSPF + IPv4/IPv6 Addressing
@@ -307,12 +327,12 @@ configure service vprn "VPRN 1" bgp group "to_CE1_Blue" peer-as <remote-asn>
 configure service vprn "VPRN 1" bgp group "to_CE1_Blue" family ipv4 true
 configure service vprn "VPRN 1" bgp group "to_CE1_Blue" family ipv6 true
 
-# Add IPv4 BGP neighbors
+# Peer with the CE from within the VPRN (IPv4)
 configure service vprn "VPRN 1" bgp neighbor 10.5.9.9 group "to_CE1_Blue"
 configure service vprn "VPRN 1" bgp neighbor 10.5.9.9 import policy "accept-all"
 configure service vprn "VPRN 1" bgp neighbor 10.5.9.9 export policy "MPBGP-BGP"
 
-# Add IPv6 BGP neighbors
+# Peer with the CE from within the VPRN (IPv6)
 configure service vprn "VPRN 1" bgp neighbor 2001:db8:11::9 group "to_CE1_Blue"
 configure service vprn "VPRN 1" bgp neighbor 2001:db8:11::9 import policy "accept-all"
 configure service vprn "VPRN 1" bgp neighbor 2001:db8:11::9 export policy "MPBGP-BGP"
