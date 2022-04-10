@@ -123,6 +123,8 @@ configure service vpls "service-name" customer <customer-id>
 configure service vpls "service-name" service-id <service-id>
 configure service vpls "service-name" description "write your description here"
 configure service vpls "service-name" sap <sap-id>
+configure service vpls "service-name" bgp-evpn routes ip-prefix advertise true
+configure service vpls "service-name" bgp-evpn vxlan <instance> vxlan-instance <instance> admin-state enable
 
 
 
@@ -154,12 +156,16 @@ configure service vprn "VPRN-name"
     admin-state enable
 	route-distinguisher "<AS-number>:<service-id-number>"
 	vrf-target community "target:<route-distinguisher>"
+	route-target export "target:<route-distinguisher>"
+	route-target import "target:<route-distinguisher>"
 	auto-bind-tunnel resolution filter
 	auto-bind-tunnel resolution-filter ldp true
   interface "interface-name"
     description "write your description here"
 	ipv4 primary address <ipv4-address> prefix-length <prefix-length>
 	sap <port-id>:<vlan-id>
+	vpls "vpls-name"                <--- The access VPLS, not the actual backhaul
+	vpls "vpls-name" evpn-tunnel    <--- Stitches the access VPLS via backhaul VPLS
 	exit
   exit
 exit
@@ -200,7 +206,7 @@ show router [service-id-number] route-table
 show router [service-id-number] route-table ipv6
 show router tunnel-table
 show router policy [admin]
-show router <service-id-number> fib <slow-number> {ipv4 | ipv6}
+show router <service-id-number> fib <slot-number> {ipv4 | ipv6}
 
 show router <router-instance> ospf neighbor
 show router <router-instance> ospf database
@@ -222,13 +228,14 @@ show router bgp router vpn-ipv4 [hunt]
 show router bgp router vpn-ipv6 [hunt]
 show router bgp routes label-ipv4 [hunt]
 show router bgp routes evpn ip-prefix
+show router bgp routes evpn mac
 show router bgp neighbor
 show router bgp neighbor <ipv4-address> advertised-routes
 show router bgp neighbor <ipv4-address> received-routes
 
 show service id <service-id-number> all
-show service id <service-id-number> base
 show service id <service-id-number> all | match flag ignore-case    <--- Extra TS-ing
+show service id <service-id-number> base
 show service id <service-id-number> labels
 show service id <service-id-number> fdb detail
 show service service-using
