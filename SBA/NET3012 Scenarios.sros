@@ -149,8 +149,6 @@ configure service vpls "vpls2" bgp-evpn routes ip-prefix advertise true
 configure service vpls "vpls2" bgp-evpn vxlan 1 admin-state enable
 configure service vpls "vpls2" bgp-evpn vxlan 1 vxlan-instance 1
 
-configure service vpls "vpls2" 
-
 # Configure a VPRN within the Routed VPLS
 configure service vprn 200 admin-state enable
 configure service vprn 200 customer "100"
