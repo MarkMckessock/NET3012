@@ -93,6 +93,8 @@ configure router mpls lsp <lsp-path-name> type p2p-rsvp path-computation-method 
 ##### Fast Reroute (FRR) Configuration #####
 configure router mpls lsp <lsp-path-name> fast-reroute frr-method facility
 configure router mpls lsp <lsp-path-name> fast-reroute frr-method one-to-one
+node-protect false 		# to disable node protect, and do link protect
+standby true #			# to enable standby
 
 
 
@@ -183,7 +185,7 @@ configure policy-options policy-statement "Policy-name" default-action action-ty
 configure service vprn "VPRN-name" bgp
   group "group-name" peer-as <AS-number>
   group "group-name" family ipv4 true
-  neighbor <neighbor-AS-number>
+  neighbor <neighbor-system-ID>
     group "group-name"
     import policy "Policy-name"
     export policy "Policy-name"
