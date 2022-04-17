@@ -216,6 +216,7 @@ show router <router-instance> ospf database
 show router ldp bindings active
 show router ldp bindings services
 show router ldp discovery detail
+show router ldp session detail
 show router mpls lsp [detail]
 show router mpls lsp ["lsp-path-name"] path [detail]
 show router mpls lsp {originate | transit | terminate}
